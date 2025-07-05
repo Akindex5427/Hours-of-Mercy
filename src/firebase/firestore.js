@@ -1,0 +1,278 @@
+// Firestore database service functions
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+  serverTimestamp,
+  onSnapshot,
+} from "firebase/firestore";
+import { db } from "./config";
+
+// Staff Directory Functions
+export const staffService = {
+  // Get all staff members
+  getAllStaff: async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "staff"));
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error("Error fetching staff:", error);
+      throw error;
+    }
+  },
+
+  // Add new staff member
+  addStaff: async (staffData) => {
+    try {
+      const docRef = await addDoc(collection(db, "staff"), {
+        ...staffData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error("Error adding staff:", error);
+      throw error;
+    }
+  },
+
+  // Update staff member
+  updateStaff: async (staffId, updateData) => {
+    try {
+      const staffRef = doc(db, "staff", staffId);
+      await updateDoc(staffRef, {
+        ...updateData,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error updating staff:", error);
+      throw error;
+    }
+  },
+
+  // Delete staff member
+  deleteStaff: async (staffId) => {
+    try {
+      await deleteDoc(doc(db, "staff", staffId));
+    } catch (error) {
+      console.error("Error deleting staff:", error);
+      throw error;
+    }
+  },
+};
+
+// Events Functions
+export const eventsService = {
+  // Get upcoming events
+  getUpcomingEvents: async () => {
+    try {
+      const eventsRef = collection(db, "events");
+      const q = query(
+        eventsRef,
+        where("date", ">=", new Date()),
+        orderBy("date", "asc"),
+        limit(10)
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      throw error;
+    }
+  },
+
+  // Add new event
+  addEvent: async (eventData) => {
+    try {
+      const docRef = await addDoc(collection(db, "events"), {
+        ...eventData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error("Error adding event:", error);
+      throw error;
+    }
+  },
+
+  // Get all events
+  getAllEvents: async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "events"));
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error("Error fetching all events:", error);
+      throw error;
+    }
+  },
+};
+
+// Sermons Functions
+export const sermonsService = {
+  // Get recent sermons
+  getRecentSermons: async (limitCount = 10) => {
+    try {
+      const sermonsRef = collection(db, "sermons");
+      const q = query(sermonsRef, orderBy("date", "desc"), limit(limitCount));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error("Error fetching sermons:", error);
+      throw error;
+    }
+  },
+
+  // Add new sermon
+  addSermon: async (sermonData) => {
+    try {
+      const docRef = await addDoc(collection(db, "sermons"), {
+        ...sermonData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error("Error adding sermon:", error);
+      throw error;
+    }
+  },
+
+  // Get sermon by ID
+  getSermonById: async (sermonId) => {
+    try {
+      const sermonRef = doc(db, "sermons", sermonId);
+      const sermonSnap = await getDoc(sermonRef);
+      if (sermonSnap.exists()) {
+        return { id: sermonSnap.id, ...sermonSnap.data() };
+      } else {
+        throw new Error("Sermon not found");
+      }
+    } catch (error) {
+      console.error("Error fetching sermon:", error);
+      throw error;
+    }
+  },
+};
+
+// Prayer Requests Functions
+export const prayerRequestsService = {
+  // Add prayer request
+  addPrayerRequest: async (requestData) => {
+    try {
+      const docRef = await addDoc(collection(db, "prayerRequests"), {
+        ...requestData,
+        status: "pending",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error("Error adding prayer request:", error);
+      throw error;
+    }
+  },
+
+  // Get prayer requests (for admin)
+  getPrayerRequests: async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "prayerRequests"));
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error("Error fetching prayer requests:", error);
+      throw error;
+    }
+  },
+
+  // Update prayer request status
+  updatePrayerRequestStatus: async (requestId, status) => {
+    try {
+      const requestRef = doc(db, "prayerRequests", requestId);
+      await updateDoc(requestRef, {
+        status,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error updating prayer request:", error);
+      throw error;
+    }
+  },
+};
+
+// Newsletter Subscriptions
+export const newsletterService = {
+  // Subscribe to newsletter
+  subscribe: async (email, name = "") => {
+    try {
+      const docRef = await addDoc(collection(db, "newsletterSubscriptions"), {
+        email,
+        name,
+        subscribedAt: serverTimestamp(),
+        isActive: true,
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error("Error subscribing to newsletter:", error);
+      throw error;
+    }
+  },
+
+  // Get all subscribers (for admin)
+  getSubscribers: async () => {
+    try {
+      const querySnapshot = await getDocs(
+        collection(db, "newsletterSubscriptions")
+      );
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error("Error fetching subscribers:", error);
+      throw error;
+    }
+  },
+};
+
+// Real-time listener for live updates
+export const setupRealtimeListener = (collectionName, callback) => {
+  const collectionRef = collection(db, collectionName);
+  return onSnapshot(collectionRef, (snapshot) => {
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    callback(data);
+  });
+};
+
+// Helper function to convert Firestore timestamp to JavaScript Date
+export const firestoreTimestampToDate = (timestamp) => {
+  if (timestamp && timestamp.toDate) {
+    return timestamp.toDate();
+  }
+  return timestamp;
+};
