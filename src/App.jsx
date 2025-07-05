@@ -9,6 +9,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 // Components
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import FirebaseStatus from "./components/FirebaseStatus";
 
 // Pages
 import HomePage from "./pages/HomePage";
@@ -99,6 +100,7 @@ function App() {
           <CssBaseline />
           <Router>
             <div className="App">
+              <FirebaseStatus />
               <Header />
               <main>
                 <Routes>

@@ -1,19 +1,19 @@
 // Firebase configuration and initialization
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { getStorage } from "firebase/storage";
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
+import { getAnalytics } from 'firebase/analytics';
 
 // Your Firebase configuration object
-// Get these values from your Firebase Console and add them to your .env.local file
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID, // Optional, for Analytics
+  apiKey: "AIzaSyBdctpPLqgEdQx3PrlmgsD4_T4fq7fcinU",
+  authDomain: "the-project-f1728.firebaseapp.com",
+  projectId: "the-project-f1728",
+  storageBucket: "the-project-f1728.firebasestorage.app",
+  messagingSenderId: "800459592558",
+  appId: "1:800459592558:web:469d73bd7c2bbc0ace277f",
+  measurementId: "G-P5NDLWL5NZ"
 };
 
 // Initialize Firebase
@@ -23,5 +23,6 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
+export const analytics = getAnalytics(app);
 
 export default app;

@@ -17,6 +17,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  CircularProgress,
 } from "@mui/material";
 import {
   Favorite,
@@ -28,6 +29,7 @@ import {
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
+import { usePrayerRequests } from "../hooks/useFirestore";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -52,6 +54,13 @@ const schema = yup.object({
 const PrayerRequestPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Firebase hooks
+  const {
+    submitPrayerRequest,
+    loading: firebaseLoading,
+    error: firebaseError,
+  } = usePrayerRequests();
 
   const {
     control,
@@ -121,11 +130,12 @@ const PrayerRequestPage = () => {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     try {
-      // TODO: Implement prayer request submission
-      console.log("Prayer request submission:", data);
-
-      // Simulate form submission
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Submit prayer request to Firebase
+      await submitPrayerRequest({
+        ...data,
+        submittedAt: new Date().toISOString(),
+        status: "pending",
+      });
 
       setShowSuccess(true);
       reset();

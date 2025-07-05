@@ -9,6 +9,8 @@ import {
   TextField,
   Button,
   Divider,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import {
   Facebook,
@@ -20,14 +22,24 @@ import {
   AccessTime,
 } from "@mui/icons-material";
 import { Link as RouterLink } from "react-router-dom";
+import { useNewsletter } from "../../hooks/useFirestore";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
 
-  const handleNewsletterSubmit = (e) => {
+  // Firebase newsletter hook
+  const { subscribe, loading, error, success, resetStatus } = useNewsletter();
+
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement newsletter signup
-    console.log("Newsletter signup:", email);
+    if (email.trim()) {
+      await subscribe(email);
+      if (success) {
+        setEmail("");
+        // Reset status after 3 seconds
+        setTimeout(() => resetStatus(), 3000);
+      }
+    }
     setEmail("");
   };
 
@@ -144,6 +156,18 @@ const Footer = () => {
               onSubmit={handleNewsletterSubmit}
               sx={{ mb: 3 }}
             >
+              {/* Firebase Status Messages */}
+              {success && (
+                <Alert severity="success" sx={{ mb: 2, fontSize: "0.875rem" }}>
+                  Successfully subscribed to newsletter!
+                </Alert>
+              )}
+              {error && (
+                <Alert severity="error" sx={{ mb: 2, fontSize: "0.875rem" }}>
+                  {error}
+                </Alert>
+              )}
+
               <TextField
                 fullWidth
                 size="small"
@@ -175,7 +199,12 @@ const Footer = () => {
                 variant="contained"
                 color="secondary"
                 fullWidth
-                disabled={!email}
+                disabled={!email || loading}
+                startIcon={
+                  loading ? (
+                    <CircularProgress size={16} color="inherit" />
+                  ) : null
+                }
               >
                 Subscribe
               </Button>

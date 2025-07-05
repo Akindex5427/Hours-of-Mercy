@@ -11,6 +11,8 @@ import {
   CardMedia,
   Paper,
   IconButton,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import {
   PlayArrow,
@@ -24,12 +26,26 @@ import {
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useUpcomingEvents, useSermons } from "../hooks/useFirestore";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
 
 const HomePage = () => {
-  const upcomingEvents = [
+  // Firebase hooks for real-time data
+  const {
+    events: firebaseEvents,
+    loading: eventsLoading,
+    error: eventsError,
+  } = useUpcomingEvents();
+  const {
+    sermons: firebaseSermons,
+    loading: sermonsLoading,
+    error: sermonsError,
+  } = useSermons(3);
+
+  // Fallback static data for when Firebase is loading or if no data exists
+  const fallbackEvents = [
     {
       title: "Sunday Worship Service",
       date: "Every Sunday",
@@ -49,6 +65,10 @@ const HomePage = () => {
       description: "A special conference for our young people.",
     },
   ];
+
+  // Use Firebase data if available, otherwise use fallback data
+  const upcomingEvents =
+    firebaseEvents?.length > 0 ? firebaseEvents : fallbackEvents;
 
   const ministries = [
     {
@@ -377,6 +397,22 @@ const HomePage = () => {
             <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
               Join us for these special times of worship and fellowship
             </Typography>
+
+            {/* Firebase Connection Status */}
+            {eventsLoading && (
+              <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                <CircularProgress size={20} sx={{ mr: 1 }} />
+                <Typography variant="body2" color="text.secondary">
+                  Loading events from database...
+                </Typography>
+              </Box>
+            )}
+
+            {eventsError && (
+              <Alert severity="info" sx={{ mb: 2, maxWidth: 600, mx: "auto" }}>
+                Using sample data. Connect to Firebase to see live events.
+              </Alert>
+            )}
           </MotionBox>
 
           <Grid container spacing={3}>
