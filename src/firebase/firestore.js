@@ -85,10 +85,24 @@ export const eventsService = {
         limit(10)
       );
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      return querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamp to JavaScript Date, then to string
+          date: data.date?.toDate
+            ? data.date.toDate().toLocaleDateString()
+            : data.date,
+          // Handle createdAt and updatedAt if they exist
+          createdAt: data.createdAt?.toDate
+            ? data.createdAt.toDate()
+            : data.createdAt,
+          updatedAt: data.updatedAt?.toDate
+            ? data.updatedAt.toDate()
+            : data.updatedAt,
+        };
+      });
     } catch (error) {
       console.error("Error fetching events:", error);
       throw error;
@@ -133,10 +147,23 @@ export const sermonsService = {
       const sermonsRef = collection(db, "sermons");
       const q = query(sermonsRef, orderBy("date", "desc"), limit(limitCount));
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      return querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamp to JavaScript Date
+          date: data.date?.toDate
+            ? data.date.toDate().toLocaleDateString()
+            : data.date,
+          createdAt: data.createdAt?.toDate
+            ? data.createdAt.toDate()
+            : data.createdAt,
+          updatedAt: data.updatedAt?.toDate
+            ? data.updatedAt.toDate()
+            : data.updatedAt,
+        };
+      });
     } catch (error) {
       console.error("Error fetching sermons:", error);
       throw error;
@@ -197,10 +224,20 @@ export const prayerRequestsService = {
   getPrayerRequests: async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "prayerRequests"));
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      return querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamps to JavaScript Dates
+          createdAt: data.createdAt?.toDate
+            ? data.createdAt.toDate()
+            : data.createdAt,
+          updatedAt: data.updatedAt?.toDate
+            ? data.updatedAt.toDate()
+            : data.updatedAt,
+        };
+      });
     } catch (error) {
       console.error("Error fetching prayer requests:", error);
       throw error;
@@ -246,12 +283,113 @@ export const newsletterService = {
       const querySnapshot = await getDocs(
         collection(db, "newsletterSubscriptions")
       );
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      return querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamp to JavaScript Date
+          subscribedAt: data.subscribedAt?.toDate
+            ? data.subscribedAt.toDate()
+            : data.subscribedAt,
+        };
+      });
     } catch (error) {
       console.error("Error fetching subscribers:", error);
+      throw error;
+    }
+  },
+};
+
+// Contact Form Functions
+export const contactService = {
+  // Submit contact form
+  submitContactForm: async (contactData) => {
+    try {
+      const docRef = await addDoc(collection(db, "contactSubmissions"), {
+        ...contactData,
+        submittedAt: serverTimestamp(),
+        status: "new", // new, read, replied
+        isUrgent: contactData.isUrgent || false,
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      throw error;
+    }
+  },
+
+  // Get all contact submissions (admin only)
+  getAllContactSubmissions: async () => {
+    try {
+      const q = query(
+        collection(db, "contactSubmissions"),
+        orderBy("submittedAt", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamp to JavaScript Date
+          submittedAt: data.submittedAt?.toDate
+            ? data.submittedAt.toDate()
+            : data.submittedAt,
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching contact submissions:", error);
+      throw error;
+    }
+  },
+
+  // Update contact submission status
+  updateContactStatus: async (submissionId, status) => {
+    try {
+      const docRef = doc(db, "contactSubmissions", submissionId);
+      await updateDoc(docRef, {
+        status,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error updating contact status:", error);
+      throw error;
+    }
+  },
+
+  // Get contact submissions by status
+  getContactSubmissionsByStatus: async (status) => {
+    try {
+      const q = query(
+        collection(db, "contactSubmissions"),
+        where("status", "==", status),
+        orderBy("submittedAt", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamp to JavaScript Date
+          submittedAt: data.submittedAt?.toDate
+            ? data.submittedAt.toDate()
+            : data.submittedAt,
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching contact submissions by status:", error);
+      throw error;
+    }
+  },
+
+  // Delete contact submission
+  deleteContactSubmission: async (submissionId) => {
+    try {
+      await deleteDoc(doc(db, "contactSubmissions", submissionId));
+    } catch (error) {
+      console.error("Error deleting contact submission:", error);
       throw error;
     }
   },

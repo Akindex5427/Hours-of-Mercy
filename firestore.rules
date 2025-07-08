@@ -1,0 +1,43 @@
+// Firestore Security Rules for Christ Apostolic Church Hours of Mercy
+// Copy these rules to your Firebase Console > Firestore Database > Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Staff Directory - Public read, admin write
+    match /staff/{document} {
+      allow read: if true;
+      allow write: if true; // Temporarily allow all writes for development
+    }
+    
+    // Events - Public read, admin write
+    match /events/{document} {
+      allow read: if true;
+      allow write: if true; // Temporarily allow all writes for development
+    }
+    
+    // Sermons - Public read, admin write
+    match /sermons/{document} {
+      allow read: if true;
+      allow write: if true; // Temporarily allow all writes for development
+    }
+    
+    // Prayer Requests - Allow create for everyone, admin read/update
+    match /prayerRequests/{document} {
+      allow create: if true; // Anyone can submit prayer requests
+      allow read, update, delete: if true; // Temporarily allow all access for development
+    }
+    
+    // Newsletter Subscriptions - Allow create for everyone, admin read
+    match /newsletterSubscriptions/{document} {
+      allow create: if true; // Anyone can subscribe
+      allow read, update, delete: if true; // Temporarily allow all access for development
+    }
+    
+    // Test collection for connection testing
+    match /__connection_test__/{document} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   Box,
@@ -19,6 +19,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Snackbar,
 } from "@mui/material";
 import {
   LocationOn,
@@ -30,11 +31,15 @@ import {
   Message,
   Church,
   Directions,
+  CheckCircle,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useContactForm } from "../hooks/useFirestore";
+import HeroBackground from "../components/shared/HeroBackground";
+import EnhancedButton from "../components/shared/EnhancedButton";
 
 const MotionCard = motion(Card);
 const MotionBox = motion(Box);
@@ -52,8 +57,14 @@ const schema = yup.object({
 });
 
 const ContactPage = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const {
+    submitContactForm,
+    loading: isSubmitting,
+    error: submitError,
+    success,
+    resetStatus,
+  } = useContactForm();
 
   const {
     control,
@@ -71,6 +82,19 @@ const ContactPage = () => {
       message: "",
     },
   });
+
+  // Handle success state
+  useEffect(() => {
+    if (success) {
+      setShowSuccess(true);
+      reset();
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setShowSuccess(false);
+        resetStatus();
+      }, 5000);
+    }
+  }, [success, reset, resetStatus]);
 
   const subjects = [
     "General Inquiry",
@@ -156,23 +180,24 @@ const ContactPage = () => {
   ];
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true);
     try {
-      // TODO: Implement form submission
-      console.log("Contact form submission:", data);
+      // Prepare data for Firebase submission
+      const contactData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone || "", // Optional field
+        subject: data.subject,
+        message: data.message,
+        fullName: `${data.firstName} ${data.lastName}`,
+        isUrgent:
+          data.subject === "Pastoral Care" || data.subject === "Prayer Request",
+      };
 
-      // Simulate form submission
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      setShowSuccess(true);
-      reset();
-      setIsSubmitting(false);
-
-      // Hide success message after 5 seconds
-      setTimeout(() => setShowSuccess(false), 5000);
+      console.log("Submitting contact form to Firebase:", contactData);
+      await submitContactForm(contactData);
     } catch (error) {
-      console.error("Form submission error:", error);
-      setIsSubmitting(false);
+      console.error("Contact form submission error:", error);
     }
   };
 
@@ -187,13 +212,11 @@ const ContactPage = () => {
       </Helmet>
 
       {/* Hero Section */}
-      <Box
-        sx={{
-          bgcolor: "primary.main",
-          color: "white",
-          py: 8,
-          position: "relative",
-        }}
+      <HeroBackground
+        minHeight="50vh"
+        overlayOpacity={0.8}
+        imageOpacity={0.3}
+        sx={{ py: 8 }}
       >
         <Container maxWidth="lg">
           <MotionBox
@@ -213,7 +236,7 @@ const ContactPage = () => {
             </Typography>
           </MotionBox>
         </Container>
-      </Box>
+      </HeroBackground>
 
       <Container maxWidth="lg" sx={{ py: 6 }}>
         {showSuccess && (
@@ -350,17 +373,54 @@ const ContactPage = () => {
                     </Grid>
                   </Grid>
 
-                  <Button
+                  {/* Success Alert */}
+                  {showSuccess && (
+                    <Alert
+                      severity="success"
+                      icon={<CheckCircle />}
+                      sx={{ mt: 3 }}
+                      onClose={() => {
+                        setShowSuccess(false);
+                        resetStatus();
+                      }}
+                    >
+                      <Typography variant="body1">
+                        <strong>Message sent successfully!</strong>
+                      </Typography>
+                      <Typography variant="body2">
+                        Thank you for contacting us. We'll get back to you as
+                        soon as possible.
+                      </Typography>
+                    </Alert>
+                  )}
+
+                  {/* Error Alert */}
+                  {submitError && (
+                    <Alert
+                      severity="error"
+                      sx={{ mt: 3 }}
+                      onClose={() => resetStatus()}
+                    >
+                      <Typography variant="body1">
+                        <strong>Error sending message</strong>
+                      </Typography>
+                      <Typography variant="body2">
+                        {submitError}. Please try again or contact us directly.
+                      </Typography>
+                    </Alert>
+                  )}
+
+                  <EnhancedButton
                     type="submit"
                     variant="contained"
                     color="primary"
-                    size="large"
                     disabled={isSubmitting}
                     startIcon={<Send />}
-                    sx={{ mt: 3, px: 4, py: 1.5 }}
+                    hoverEffect="glow"
+                    sx={{ mt: 3 }}
                   >
                     {isSubmitting ? "Sending..." : "Send Message"}
-                  </Button>
+                  </EnhancedButton>
                 </Box>
               </CardContent>
             </MotionCard>

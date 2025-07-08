@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { Toolbar } from "@mui/material";
 import { HelmetProvider } from "react-helmet-async";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -22,6 +23,7 @@ import ContactPage from "./pages/ContactPage";
 import PrayerRequestPage from "./pages/PrayerRequestPage";
 import MemberPortal from "./pages/MemberPortal";
 import StaffDirectory from "./pages/StaffDirectory";
+import AdminPage from "./pages/AdminPage";
 
 // Theme configuration
 const theme = createTheme({
@@ -102,6 +104,7 @@ function App() {
             <div className="App">
               <FirebaseStatus />
               <Header />
+              <Toolbar /> {/* This creates space for the fixed header */}
               <main>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
@@ -117,6 +120,7 @@ function App() {
                   />
                   <Route path="/member-portal" element={<MemberPortal />} />
                   <Route path="/staff" element={<StaffDirectory />} />
+                  <Route path="/admin" element={<AdminPage />} />
                 </Routes>
               </main>
               <Footer />

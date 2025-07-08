@@ -415,8 +415,13 @@ const AboutPage = () => {
                   Our Mission
                 </Typography>
                 <Typography variant="h6" sx={{ mb: 3, opacity: 0.9 }}>
-                  To spread the Gospel of Jesus Christ, nurture spiritual
-                  growth, and serve our community with love and compassion.
+                  We believe that the word of God is the foundation for the
+                  world and God's plan for humanity.
+                  <br />
+                  1:PETER 1:25
+                  <br />
+                  But the word of the Lord endures forever. Sugbon oro Oluwa
+                  duro titi lai. Oro yi na si ni ihinrere ti a wasu fun nyin.
                 </Typography>
                 <Typography
                   variant="body1"

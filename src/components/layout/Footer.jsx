@@ -70,7 +70,7 @@ const Footer = () => {
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
               <LocationOn sx={{ mr: 1, fontSize: 20 }} />
               <Typography variant="body2">
-                1480 Lincoln Ave
+                14801 Lincoln Ave
                 <br />
                 Dolton, Illinois 60419
               </Typography>
@@ -81,7 +81,9 @@ const Footer = () => {
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
               <Email sx={{ mr: 1, fontSize: 20 }} />
-              <Typography variant="body2">info@hoursofmercy.org</Typography>
+              <Typography variant="body2">
+                hoursofmercyministries@gmail
+              </Typography>
             </Box>
 
             {/* Social Media */}

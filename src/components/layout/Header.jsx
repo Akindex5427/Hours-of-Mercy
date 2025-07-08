@@ -79,7 +79,15 @@ const Header = () => {
 
   return (
     <>
-      <AppBar position="sticky" elevation={2}>
+      <AppBar
+        position="fixed"
+        elevation={4}
+        sx={{
+          bgcolor: "primary.main",
+          backdropFilter: "blur(10px)",
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
+        }}
+      >
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <ChurchIcon sx={{ mr: 1, fontSize: 32 }} />
@@ -95,7 +103,7 @@ const Header = () => {
                   lineHeight: 1,
                 }}
               >
-                Hours of Mercy
+                Christ Apostolic
               </Typography>
               <Typography
                 variant="caption"
@@ -105,7 +113,7 @@ const Header = () => {
                   fontSize: "0.75rem",
                 }}
               >
-                Christ Apostolic Church
+                Hours of Mercy
               </Typography>
             </Box>
           </Box>

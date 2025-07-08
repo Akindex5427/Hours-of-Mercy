@@ -6,6 +6,7 @@ import {
   sermonsService,
   prayerRequestsService,
   newsletterService,
+  contactService,
   setupRealtimeListener,
 } from "../firebase/firestore";
 
@@ -242,4 +243,101 @@ export const useRealtimeData = (collectionName) => {
   }, [collectionName]);
 
   return { data, loading, error };
+};
+
+// Hook for contact form submissions
+export const useContactForm = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
+  const submitContactForm = async (contactData) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setSuccess(false);
+
+      const submissionId = await contactService.submitContactForm(contactData);
+      setSuccess(true);
+      setLoading(false);
+      return submissionId;
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+      throw err;
+    }
+  };
+
+  const resetStatus = () => {
+    setError(null);
+    setSuccess(false);
+  };
+
+  return {
+    submitContactForm,
+    loading,
+    error,
+    success,
+    resetStatus,
+  };
+};
+
+// Hook for admin contact submissions management
+export const useContactSubmissions = () => {
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSubmissions = async () => {
+      try {
+        setLoading(true);
+        const submissionsData = await contactService.getAllContactSubmissions();
+        setSubmissions(submissionsData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubmissions();
+  }, []);
+
+  const updateStatus = async (submissionId, status) => {
+    try {
+      await contactService.updateContactStatus(submissionId, status);
+      setSubmissions((prev) =>
+        prev.map((submission) =>
+          submission.id === submissionId
+            ? { ...submission, status }
+            : submission
+        )
+      );
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const deleteSubmission = async (submissionId) => {
+    try {
+      await contactService.deleteContactSubmission(submissionId);
+      setSubmissions((prev) =>
+        prev.filter((submission) => submission.id !== submissionId)
+      );
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  return {
+    submissions,
+    loading,
+    error,
+    updateStatus,
+    deleteSubmission,
+  };
 };

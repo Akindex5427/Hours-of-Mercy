@@ -32,6 +32,8 @@ import { useForm, Controller } from "react-hook-form";
 import { usePrayerRequests } from "../hooks/useFirestore";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import HeroBackground from "../components/shared/HeroBackground";
+import EnhancedButton from "../components/shared/EnhancedButton";
 
 const MotionCard = motion(Card);
 const MotionBox = motion(Box);
@@ -160,13 +162,11 @@ const PrayerRequestPage = () => {
       </Helmet>
 
       {/* Hero Section */}
-      <Box
-        sx={{
-          bgcolor: "primary.main",
-          color: "white",
-          py: 8,
-          position: "relative",
-        }}
+      <HeroBackground
+        minHeight="50vh"
+        overlayOpacity={0.8}
+        imageOpacity={0.35}
+        sx={{ py: 8 }}
       >
         <Container maxWidth="lg">
           <MotionBox
@@ -187,7 +187,7 @@ const PrayerRequestPage = () => {
             </Typography>
           </MotionBox>
         </Container>
-      </Box>
+      </HeroBackground>
 
       <Container maxWidth="lg" sx={{ py: 6 }}>
         {showSuccess && (
@@ -438,17 +438,16 @@ const PrayerRequestPage = () => {
                   </Paper>
 
                   {/* Submit Button */}
-                  <Button
+                  <EnhancedButton
                     type="submit"
                     variant="contained"
                     color="primary"
-                    size="large"
                     disabled={isSubmitting}
                     startIcon={<Send />}
-                    sx={{ px: 4, py: 1.5 }}
+                    hoverEffect="lift"
                   >
                     {isSubmitting ? "Submitting..." : "Submit Prayer Request"}
-                  </Button>
+                  </EnhancedButton>
                 </Box>
               </CardContent>
             </MotionCard>
