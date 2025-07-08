@@ -558,82 +558,69 @@ const newsletterSubscriptionsData = [
 // Sample Contact Form Submissions Data
 const contactSubmissionsData = [
   {
-    firstName: "Sarah",
-    lastName: "Williams",
-    fullName: "Sarah Williams",
-    email: "sarah.williams@example.com",
-    phone: "(708) 555-0198",
+    firstName: "Michael",
+    lastName: "Wilson",
+    fullName: "Michael Wilson",
+    email: "michael.wilson@example.com",
+    phone: "(708) 555-0150",
     subject: "General Inquiry",
     message:
-      "Hello! I'm new to the area and looking for a church home. Could you tell me more about your services and ministries? I'm particularly interested in women's fellowship and community outreach programs.",
-    submittedAt: new Date("2025-07-01T09:15:00"),
+      "Hi, I'm interested in learning more about your church and potentially becoming a member. Could someone contact me to discuss your membership process?",
     status: "new",
     isUrgent: false,
+    submittedAt: new Date("2025-07-05T14:30:00"),
   },
   {
-    firstName: "Michael",
-    lastName: "Chen",
-    fullName: "Michael Chen",
-    email: "michael.chen@example.com",
-    phone: "(708) 555-0199",
-    subject: "Ministry Interest",
-    message:
-      "I've been attending for a few weeks and would love to get involved in ministry. I have experience in youth work and am passionate about mentoring young people. How can I join the youth ministry team?",
-    submittedAt: new Date("2025-07-02T14:30:00"),
-    status: "read",
-    isUrgent: false,
-  },
-  {
-    firstName: "Lisa",
-    lastName: "Brown",
-    fullName: "Lisa Brown",
-    email: "lisa.brown@example.com",
-    phone: "(708) 555-0200",
+    firstName: "Sarah",
+    lastName: "Johnson",
+    fullName: "Sarah Johnson",
+    email: "sarah.johnson@example.com",
+    phone: "(708) 555-0151",
     subject: "Prayer Request",
     message:
-      "Please pray for my family during this difficult time. My husband recently lost his job and we're struggling financially. We trust in God's provision but would appreciate your prayers for guidance and provision.",
-    submittedAt: new Date("2025-07-03T16:45:00"),
-    status: "replied",
+      "Please pray for my family during this difficult time. My father is in the hospital and we would appreciate your prayers for his recovery.",
+    status: "read",
     isUrgent: true,
+    submittedAt: new Date("2025-07-04T09:15:00"),
   },
   {
     firstName: "David",
-    lastName: "Martinez",
-    fullName: "David Martinez",
-    email: "david.martinez@example.com",
+    lastName: "Brown",
+    fullName: "David Brown",
+    email: "david.brown@example.com",
     phone: "",
+    subject: "Ministry Interest",
+    message:
+      "I'm interested in joining the youth ministry team. I have experience working with teenagers and would love to contribute to your youth programs.",
+    status: "replied",
+    isUrgent: false,
+    submittedAt: new Date("2025-07-03T16:45:00"),
+  },
+  {
+    firstName: "Lisa",
+    lastName: "Davis",
+    fullName: "Lisa Davis",
+    email: "lisa.davis@example.com",
+    phone: "(708) 555-0152",
     subject: "Event Information",
     message:
-      "I heard about your upcoming youth conference. Could you provide more details about the schedule, cost, and registration process? My teenager is very interested in attending.",
-    submittedAt: new Date("2025-07-04T11:20:00"),
+      "Could you provide more details about the upcoming Youth Conference? My daughter is interested in attending and I'd like to know about registration and costs.",
     status: "new",
     isUrgent: false,
+    submittedAt: new Date("2025-07-02T11:20:00"),
   },
   {
-    firstName: "Angela",
-    lastName: "Thompson",
-    fullName: "Angela Thompson",
-    email: "angela.thompson@example.com",
-    phone: "(708) 555-0201",
+    firstName: "Robert",
+    lastName: "Garcia",
+    fullName: "Robert Garcia",
+    email: "robert.garcia@example.com",
+    phone: "(708) 555-0153",
     subject: "Pastoral Care",
     message:
-      "I would like to request a pastoral visit for my elderly mother who is in the hospital. She's been a member of the congregation for many years and would appreciate prayer and encouragement during her recovery.",
-    submittedAt: new Date("2025-07-05T08:00:00"),
-    status: "new",
-    isUrgent: true,
-  },
-  {
-    firstName: "James",
-    lastName: "Wilson",
-    fullName: "James Wilson",
-    email: "james.wilson@example.com",
-    phone: "(708) 555-0202",
-    subject: "Volunteer Opportunities",
-    message:
-      "I'm recently retired and have more time to serve. I'd like to know about volunteer opportunities, especially with community outreach or helping with church maintenance and setup.",
-    submittedAt: new Date("2025-07-06T10:30:00"),
+      "My wife and I are going through a difficult period in our marriage and would appreciate pastoral counseling. Could someone from the pastoral team contact us?",
     status: "read",
-    isUrgent: false,
+    isUrgent: true,
+    submittedAt: new Date("2025-07-01T08:30:00"),
   },
 ];
 
@@ -698,16 +685,13 @@ async function seedFirestoreData() {
     }
 
     // Seed Contact Form Submissions
-    console.log("📬 Seeding Contact Form Submissions...");
+    console.log("📞 Seeding Contact Form Submissions...");
     for (const submission of contactSubmissionsData) {
       await addDoc(collection(db, "contactSubmissions"), {
         ...submission,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        submittedAt: serverTimestamp(),
       });
-      console.log(
-        `✅ Added contact form submission from: ${submission.fullName}`
-      );
+      console.log(`✅ Added contact submission from: ${submission.fullName}`);
     }
 
     console.log("🎉 Database seeding completed successfully!");

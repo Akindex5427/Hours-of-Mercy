@@ -36,16 +36,12 @@ const StaffDirectory = () => {
   const staff = [
     {
       id: 1,
-      name: "Pastor John Smith",
+      name: "Peter Olawale Sunday",
       title: "Senior Pastor",
       department: "Leadership",
-      email: "pastor.john@hoursofmercy.org",
-      phone: "(708) 555-0124",
-      bio: "Pastor John has been serving Christ Apostolic Church Hours of Mercy for over 15 years. He holds a Master of Divinity from Chicago Theological Seminary and is passionate about teaching God's Word and shepherding the flock.",
-      education: [
-        "M.Div., Chicago Theological Seminary",
-        "B.A. Theology, Moody Bible Institute",
-      ],
+      email: "pastor.olawale@hoursofmercy.org",
+      phone: "(773) 977-9630",
+      bio: "Pastor Olawale has been serving Christ Apostolic Church Hours of Mercy for over 15 years. He holds a Master of Divinity from Chicago Theological Seminary and is passionate about teaching God's Word and shepherding the flock.",
       experience: [
         "15+ years in pastoral ministry",
         "Former missionary to Nigeria",

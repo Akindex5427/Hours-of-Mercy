@@ -32,8 +32,7 @@ import { useForm, Controller } from "react-hook-form";
 import { usePrayerRequests } from "../hooks/useFirestore";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import HeroBackground from "../components/shared/HeroBackground";
-import EnhancedButton from "../components/shared/EnhancedButton";
+import { logAuditEvent } from "../firebase/audit";
 
 const MotionCard = motion(Card);
 const MotionBox = motion(Box);
@@ -139,6 +138,16 @@ const PrayerRequestPage = () => {
         status: "pending",
       });
 
+      // Log the audit event
+      logAuditEvent("prayer_request_submission", {
+        email: data.email,
+        requestType: data.requestType,
+        isUrgent: data.isUrgent,
+        isAnonymous: data.isAnonymous,
+        allowSharing: data.allowSharing,
+        submittedAt: new Date().toISOString(),
+      });
+
       setShowSuccess(true);
       reset();
       setIsSubmitting(false);
@@ -162,11 +171,13 @@ const PrayerRequestPage = () => {
       </Helmet>
 
       {/* Hero Section */}
-      <HeroBackground
-        minHeight="50vh"
-        overlayOpacity={0.8}
-        imageOpacity={0.35}
-        sx={{ py: 8 }}
+      <Box
+        sx={{
+          bgcolor: "primary.main",
+          color: "white",
+          py: 8,
+          position: "relative",
+        }}
       >
         <Container maxWidth="lg">
           <MotionBox
@@ -187,7 +198,7 @@ const PrayerRequestPage = () => {
             </Typography>
           </MotionBox>
         </Container>
-      </HeroBackground>
+      </Box>
 
       <Container maxWidth="lg" sx={{ py: 6 }}>
         {showSuccess && (
@@ -438,16 +449,17 @@ const PrayerRequestPage = () => {
                   </Paper>
 
                   {/* Submit Button */}
-                  <EnhancedButton
+                  <Button
                     type="submit"
                     variant="contained"
                     color="primary"
+                    size="large"
                     disabled={isSubmitting}
                     startIcon={<Send />}
-                    hoverEffect="lift"
+                    sx={{ px: 4, py: 1.5 }}
                   >
                     {isSubmitting ? "Submitting..." : "Submit Prayer Request"}
-                  </EnhancedButton>
+                  </Button>
                 </Box>
               </CardContent>
             </MotionCard>

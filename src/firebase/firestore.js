@@ -7,6 +7,7 @@ import {
   deleteDoc,
   getDoc,
   getDocs,
+  setDoc,
   query,
   where,
   orderBy,
@@ -296,6 +297,127 @@ export const newsletterService = {
       });
     } catch (error) {
       console.error("Error fetching subscribers:", error);
+      throw error;
+    }
+  },
+};
+
+// Member/User Profile Functions
+export const memberService = {
+  // Create member profile after Firebase Auth registration
+  createMemberProfile: async (uid, memberData) => {
+    try {
+      const docRef = doc(db, "members", uid);
+      await setDoc(docRef, {
+        ...memberData,
+        uid,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        isActive: true,
+        role: "member", // member, staff, admin
+        membershipStatus: "active", // active, inactive, pending
+        joinedChurch: memberData.joinedChurch || null,
+        profileComplete: false,
+      });
+      return uid;
+    } catch (error) {
+      console.error("Error creating member profile:", error);
+      throw error;
+    }
+  },
+
+  // Get member profile by UID
+  getMemberProfile: async (uid) => {
+    try {
+      const docRef = doc(db, "members", uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          ...data,
+          // Convert Firestore Timestamps to JavaScript Dates
+          createdAt: data.createdAt?.toDate
+            ? data.createdAt.toDate()
+            : data.createdAt,
+          updatedAt: data.updatedAt?.toDate
+            ? data.updatedAt.toDate()
+            : data.updatedAt,
+          joinedChurch: data.joinedChurch?.toDate
+            ? data.joinedChurch.toDate()
+            : data.joinedChurch,
+        };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching member profile:", error);
+      throw error;
+    }
+  },
+
+  // Update member profile
+  updateMemberProfile: async (uid, updateData) => {
+    try {
+      const docRef = doc(db, "members", uid);
+      await updateDoc(docRef, {
+        ...updateData,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error updating member profile:", error);
+      throw error;
+    }
+  },
+
+  // Get all members (admin only)
+  getAllMembers: async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "members"));
+      return querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamps to JavaScript Dates
+          createdAt: data.createdAt?.toDate
+            ? data.createdAt.toDate()
+            : data.createdAt,
+          updatedAt: data.updatedAt?.toDate
+            ? data.updatedAt.toDate()
+            : data.updatedAt,
+          joinedChurch: data.joinedChurch?.toDate
+            ? data.joinedChurch.toDate()
+            : data.joinedChurch,
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching members:", error);
+      throw error;
+    }
+  },
+
+  // Update member status
+  updateMemberStatus: async (uid, status) => {
+    try {
+      const docRef = doc(db, "members", uid);
+      await updateDoc(docRef, {
+        membershipStatus: status,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error updating member status:", error);
+      throw error;
+    }
+  },
+
+  // Delete member profile
+  deleteMemberProfile: async (uid) => {
+    try {
+      await deleteDoc(doc(db, "members", uid));
+    } catch (error) {
+      console.error("Error deleting member profile:", error);
       throw error;
     }
   },

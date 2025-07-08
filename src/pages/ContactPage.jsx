@@ -37,9 +37,8 @@ import { motion } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useContactForm } from "../hooks/useFirestore";
-import HeroBackground from "../components/shared/HeroBackground";
-import EnhancedButton from "../components/shared/EnhancedButton";
+import { useContactForm, useContactSubmissions } from "../hooks/useFirestore";
+import { logAuditEvent } from "../firebase/audit";
 
 const MotionCard = motion(Card);
 const MotionBox = motion(Box);
@@ -196,6 +195,18 @@ const ContactPage = () => {
 
       console.log("Submitting contact form to Firebase:", contactData);
       await submitContactForm(contactData);
+
+      // Log audit event
+      logAuditEvent("contact_form_submission", {
+        email: data.email,
+        subject: data.subject,
+        messageLength: data.message.length,
+        timestamp: new Date(),
+      });
+
+      setShowSuccess(true);
+      reset();
+      setTimeout(() => setShowSuccess(false), 5000);
     } catch (error) {
       console.error("Contact form submission error:", error);
     }
@@ -204,7 +215,7 @@ const ContactPage = () => {
   return (
     <>
       <Helmet>
-        <title>Contact Us - Christ Apostolic Church Hours of Mercy</title>
+        <title>Contact - Christ Apostolic Church Hours of Mercy</title>
         <meta
           name="description"
           content="Get in touch with Christ Apostolic Church Hours of Mercy. Find our location, service times, and contact information."
@@ -212,11 +223,13 @@ const ContactPage = () => {
       </Helmet>
 
       {/* Hero Section */}
-      <HeroBackground
-        minHeight="50vh"
-        overlayOpacity={0.8}
-        imageOpacity={0.3}
-        sx={{ py: 8 }}
+      <Box
+        sx={{
+          bgcolor: "primary.main",
+          color: "white",
+          py: 8,
+          position: "relative",
+        }}
       >
         <Container maxWidth="lg">
           <MotionBox
@@ -236,7 +249,7 @@ const ContactPage = () => {
             </Typography>
           </MotionBox>
         </Container>
-      </HeroBackground>
+      </Box>
 
       <Container maxWidth="lg" sx={{ py: 6 }}>
         {showSuccess && (
@@ -410,17 +423,17 @@ const ContactPage = () => {
                     </Alert>
                   )}
 
-                  <EnhancedButton
+                  <Button
                     type="submit"
                     variant="contained"
                     color="primary"
+                    size="large"
                     disabled={isSubmitting}
                     startIcon={<Send />}
-                    hoverEffect="glow"
-                    sx={{ mt: 3 }}
+                    sx={{ mt: 3, px: 4, py: 1.5 }}
                   >
                     {isSubmitting ? "Sending..." : "Send Message"}
-                  </EnhancedButton>
+                  </Button>
                 </Box>
               </CardContent>
             </MotionCard>

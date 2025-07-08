@@ -7,8 +7,10 @@ import {
   prayerRequestsService,
   newsletterService,
   contactService,
+  memberService,
   setupRealtimeListener,
 } from "../firebase/firestore";
+import { authService, getAuthErrorMessage } from "../firebase/auth";
 
 // Hook for staff data
 export const useStaff = () => {
@@ -339,5 +341,195 @@ export const useContactSubmissions = () => {
     error,
     updateStatus,
     deleteSubmission,
+  };
+};
+
+// Hook for Firebase Authentication
+export const useAuth = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = authService.onAuthStateChanged((user) => {
+      setUser(user);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const signIn = async (email, password) => {
+    try {
+      setError(null);
+      setLoading(true);
+      const userData = await authService.signInWithEmailAndPassword(
+        email,
+        password
+      );
+      return userData;
+    } catch (err) {
+      const errorMessage = getAuthErrorMessage(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signUp = async (email, password, userData) => {
+    try {
+      setError(null);
+      setLoading(true);
+      const newUser = await authService.registerWithEmailAndPassword(
+        email,
+        password,
+        userData
+      );
+      return newUser;
+    } catch (err) {
+      const errorMessage = getAuthErrorMessage(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      setError(null);
+      await authService.signOut();
+    } catch (err) {
+      const errorMessage = getAuthErrorMessage(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
+  const resetPassword = async (email) => {
+    try {
+      setError(null);
+      await authService.sendPasswordResetEmail(email);
+    } catch (err) {
+      const errorMessage = getAuthErrorMessage(err);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
+
+  return {
+    user,
+    loading,
+    error,
+    signIn,
+    signUp,
+    signOut,
+    resetPassword,
+    isAuthenticated: !!user,
+  };
+};
+
+// Hook for member profile management
+export const useMemberProfile = (uid) => {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!uid) {
+      setProfile(null);
+      setLoading(false);
+      return;
+    }
+
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const profileData = await memberService.getMemberProfile(uid);
+        setProfile(profileData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [uid]);
+
+  const updateProfile = async (updateData) => {
+    try {
+      setError(null);
+      await memberService.updateMemberProfile(uid, updateData);
+      setProfile((prev) => ({ ...prev, ...updateData }));
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  return {
+    profile,
+    loading,
+    error,
+    updateProfile,
+  };
+};
+
+// Hook for admin member management
+export const useMembers = () => {
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        setLoading(true);
+        const membersData = await memberService.getAllMembers();
+        setMembers(membersData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMembers();
+  }, []);
+
+  const updateMemberStatus = async (uid, status) => {
+    try {
+      await memberService.updateMemberStatus(uid, status);
+      setMembers((prev) =>
+        prev.map((member) =>
+          member.id === uid ? { ...member, membershipStatus: status } : member
+        )
+      );
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const deleteMember = async (uid) => {
+    try {
+      await memberService.deleteMemberProfile(uid);
+      setMembers((prev) => prev.filter((member) => member.id !== uid));
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  return {
+    members,
+    loading,
+    error,
+    updateMemberStatus,
+    deleteMember,
   };
 };

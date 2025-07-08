@@ -1,43 +1,118 @@
-// Firestore Security Rules for Christ Apostolic Church Hours of Mercy
+// Production-Ready Firestore Security Rules for Christ Apostolic Church Hours of Mercy
 // Copy these rules to your Firebase Console > Firestore Database > Rules
 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Staff Directory - Public read, admin write
+    // Helper functions for authorization
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email in [
+               'admin@hoursofmercy.org',
+               'pastor@hoursofmercy.org', 
+               'secretary@hoursofmercy.org'
+             ];
+    }
+    
+    function isValidData(requiredFields) {
+      return requiredFields.diff(resource.data.keys()).size() == 0;
+    }
+    
+    function isRecentlyCreated() {
+      return request.time < resource.data.createdAt + duration.value(1, 'h');
+    }
+    
+    // Staff Directory - Public read, admin write only
     match /staff/{document} {
-      allow read: if true;
-      allow write: if true; // Temporarily allow all writes for development
+      allow read: if true; // Public information
+      allow create, update, delete: if isAdmin();
     }
     
-    // Events - Public read, admin write
+    // Events - Public read, admin write only
     match /events/{document} {
-      allow read: if true;
-      allow write: if true; // Temporarily allow all writes for development
+      allow read: if true; // Public information
+      allow create, update, delete: if isAdmin();
     }
     
-    // Sermons - Public read, admin write
+    // Sermons - Public read, admin write only
     match /sermons/{document} {
-      allow read: if true;
-      allow write: if true; // Temporarily allow all writes for development
+      allow read: if true; // Public information
+      allow create, update, delete: if isAdmin();
     }
     
-    // Prayer Requests - Allow create for everyone, admin read/update
+    // Prayer Requests - Create for anyone, admin read/manage
     match /prayerRequests/{document} {
-      allow create: if true; // Anyone can submit prayer requests
-      allow read, update, delete: if true; // Temporarily allow all access for development
+      allow create: if true && // Anyone can submit prayer requests
+                   'name' in resource.data &&
+                   'email' in resource.data &&
+                   'prayerRequest' in resource.data &&
+                   resource.data.prayerRequest.size() <= 1000; // Limit length
+      allow read, update, delete: if isAdmin();
     }
     
-    // Newsletter Subscriptions - Allow create for everyone, admin read
+    // Newsletter Subscriptions - Create for anyone, admin manage
     match /newsletterSubscriptions/{document} {
-      allow create: if true; // Anyone can subscribe
-      allow read, update, delete: if true; // Temporarily allow all access for development
+      allow create: if true && // Anyone can subscribe
+                   'email' in resource.data &&
+                   'subscribedAt' in resource.data;
+      allow read, update, delete: if isAdmin();
     }
     
-    // Test collection for connection testing
+    // Contact Form Submissions - Create for anyone, admin manage
+    match /contactSubmissions/{document} {
+      allow create: if true && // Anyone can submit contact forms
+                   'name' in resource.data &&
+                   'email' in resource.data &&
+                   'subject' in resource.data &&
+                   'message' in resource.data &&
+                   resource.data.message.size() <= 2000; // Limit message length
+      allow read, update, delete: if isAdmin();
+    }
+    
+    // Member Profiles - Users can read/update their own, admin can manage all
+    match /members/{userId} {
+      allow read, update: if isAuthenticated() && 
+                         (isOwner(userId) || isAdmin());
+      allow create: if isAuthenticated() && 
+                   isOwner(userId) &&
+                   'email' in resource.data &&
+                   'firstName' in resource.data &&
+                   'lastName' in resource.data &&
+                   'createdAt' in resource.data;
+      allow delete: if isAdmin();
+      
+      // Users can only update specific fields
+      allow update: if isOwner(userId) && 
+                   request.data.diff(resource.data).affectedKeys()
+                     .hasOnly(['firstName', 'lastName', 'phone', 'updatedAt']);
+    }
+    
+    // Admin-only collections
+    match /adminLogs/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /systemConfig/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Test collection for connection testing (temporary - remove in production)
     match /__connection_test__/{document} {
-      allow read, write: if true;
+      allow read, write: if isAuthenticated(); // Only authenticated users can test
+    }
+    
+    // Deny all other paths
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
