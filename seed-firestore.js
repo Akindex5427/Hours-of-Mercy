@@ -1,7 +1,7 @@
 // Firebase Data Seeding Script
 // Run this script to populate your Firestore database with sample data
 
-import { db } from "./src/firebase/config.js";
+import { db } from "./firebase-server-config.js";
 import {
   collection,
   doc,
@@ -283,6 +283,7 @@ const eventsData = [
 
 // Sample Sermons Data
 const sermonsData = [
+  // Original Firebase data
   {
     title: "Walking by Faith, Not by Sight",
     speaker: "Pastor John Smith",
@@ -307,6 +308,31 @@ const sermonsData = [
     likes: 18,
     status: "published",
   },
+  // SermonPage static data converted to Firebase format
+  {
+    title: "Walking in God's Mercy",
+    speaker: "Pastor John Smith",
+    date: new Date("2025-06-29T11:00:00"),
+    series: "Hours of Grace",
+    description:
+      "Discover how God's mercy is new every morning and how we can walk in His grace daily.",
+    scripture: "Lamentations 3:22-23",
+    duration: "45:32",
+    audioUrl: "/sermons/walking-in-mercy.mp3",
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    thumbnailUrl: "/api/placeholder/400/225",
+    category: "mercy",
+    tags: ["Mercy", "Grace", "Daily Walk"],
+    notes:
+      "Discover how God's mercy is new every morning and how we can walk in His grace daily.",
+    downloads: {
+      audio: "/sermons/walking-in-mercy.mp3",
+      notes: "/sermons/walking-in-mercy-notes.pdf",
+    },
+    views: 0,
+    likes: 0,
+    status: "published",
+  },
   {
     title: "The Power of Prayer",
     speaker: "Pastor Mary Johnson",
@@ -329,6 +355,76 @@ const sermonsData = [
     },
     views: 189,
     likes: 22,
+    status: "published",
+  },
+  // Additional SermonPage sermon with different description
+  {
+    title: "The Power of Prayer (Lord's Prayer)",
+    speaker: "Pastor Mary Johnson",
+    date: new Date("2025-06-22T11:00:00"),
+    series: "Foundations of Faith",
+    description:
+      "Understanding the Lord's Prayer and developing a powerful prayer life.",
+    scripture: "Matthew 6:9-13",
+    duration: "38:15",
+    audioUrl: "/sermons/power-of-prayer.mp3",
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    thumbnailUrl: "/api/placeholder/400/225",
+    category: "prayer",
+    tags: ["Prayer", "Faith", "Spiritual Growth"],
+    notes:
+      "Understanding the Lord's Prayer and developing a powerful prayer life.",
+    downloads: {
+      audio: "/sermons/power-of-prayer.mp3",
+      notes: "/sermons/power-of-prayer-notes.pdf",
+    },
+    views: 0,
+    likes: 0,
+    status: "published",
+  },
+  {
+    title: "Faith That Moves Mountains",
+    speaker: "Pastor David Wilson",
+    date: new Date("2025-06-15T11:00:00"),
+    series: "Foundations of Faith",
+    description:
+      "Exploring the power of faith and how to overcome life's challenges.",
+    scripture: "Matthew 17:20",
+    duration: "42:18",
+    audioUrl: "/sermons/faith-moves-mountains.mp3",
+    thumbnailUrl: "/api/placeholder/400/225",
+    category: "faith",
+    tags: ["Faith", "Overcoming", "Mountains"],
+    notes:
+      "Exploring the power of faith and how to overcome life's challenges.",
+    downloads: {
+      audio: "/sermons/faith-moves-mountains.mp3",
+      notes: "/sermons/faith-moves-mountains-notes.pdf",
+    },
+    views: 0,
+    likes: 0,
+    status: "published",
+  },
+  {
+    title: "Love Your Neighbor",
+    speaker: "Pastor Sarah Brown",
+    date: new Date("2025-06-08T11:00:00"),
+    series: "Living Like Jesus",
+    description: "Practical ways to show Christ's love to those around us.",
+    scripture: "Mark 12:31",
+    duration: "35:45",
+    audioUrl: "/sermons/love-your-neighbor.mp3",
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    thumbnailUrl: "/api/placeholder/400/225",
+    category: "love",
+    tags: ["Love", "Community", "Service"],
+    notes: "Practical ways to show Christ's love to those around us.",
+    downloads: {
+      audio: "/sermons/love-your-neighbor.mp3",
+      notes: "/sermons/love-your-neighbor-notes.pdf",
+    },
+    views: 0,
+    likes: 0,
     status: "published",
   },
   {
@@ -624,6 +720,347 @@ const contactSubmissionsData = [
   },
 ];
 
+// Sample Ministries Data
+const ministriesData = [
+  {
+    title: "Youth Ministry",
+    description: "Empowering the next generation through faith and fellowship.",
+    icon: "school",
+    targetAge: "13-25",
+    meetingTime: "Sundays 6:00 PM",
+    leader: "Pastor David Wilson",
+    activities: [
+      "Bible Study",
+      "Games",
+      "Community Service",
+      "Youth Conference",
+    ],
+    contact: "youth@hoursofmercy.org",
+    isActive: true,
+  },
+  {
+    title: "Women's Fellowship",
+    description: "Building strong relationships among women of faith.",
+    icon: "group",
+    targetAge: "18+",
+    meetingTime: "Second Saturday of each month, 9:00 AM",
+    leader: "Minister Sarah Brown",
+    activities: [
+      "Bible Study",
+      "Prayer",
+      "Community Outreach",
+      "Fellowship Breakfast",
+    ],
+    contact: "women@hoursofmercy.org",
+    isActive: true,
+  },
+  {
+    title: "Men's Ministry",
+    description: "Growing together as men of God and leaders.",
+    icon: "people",
+    targetAge: "18+",
+    meetingTime: "First Saturday of each month, 7:00 AM",
+    leader: "Deacon Michael Davis",
+    activities: ["Bible Study", "Prayer", "Mentorship", "Community Service"],
+    contact: "men@hoursofmercy.org",
+    isActive: true,
+  },
+  {
+    title: "Community Outreach",
+    description: "Serving our community with love and compassion.",
+    icon: "volunteer_activism",
+    targetAge: "All Ages",
+    meetingTime: "Ongoing",
+    leader: "Pastor Mary Johnson",
+    activities: [
+      "Food Bank",
+      "Homeless Ministry",
+      "Prison Outreach",
+      "Hospital Visits",
+    ],
+    contact: "outreach@hoursofmercy.org",
+    isActive: true,
+  },
+  {
+    title: "Children's Ministry",
+    description: "Teaching children about God's love in age-appropriate ways.",
+    icon: "child_care",
+    targetAge: "0-12",
+    meetingTime: "Sundays during service",
+    leader: "Sister Jennifer Williams",
+    activities: ["Sunday School", "Children's Church", "VBS", "Family Events"],
+    contact: "children@hoursofmercy.org",
+    isActive: true,
+  },
+  {
+    title: "Senior Saints",
+    description: "Fellowship and spiritual growth for our mature members.",
+    icon: "elderly",
+    targetAge: "60+",
+    meetingTime: "Third Thursday of each month, 2:00 PM",
+    leader: "Elder Robert Johnson",
+    activities: [
+      "Bible Study",
+      "Fellowship",
+      "Health Ministry",
+      "Wisdom Sharing",
+    ],
+    contact: "seniors@hoursofmercy.org",
+    isActive: true,
+  },
+  {
+    title: "Music Ministry",
+    description: "Worshiping God through music and song.",
+    icon: "music_note",
+    targetAge: "All Ages",
+    meetingTime: "Thursdays 7:00 PM (Choir), Sundays 9:30 AM (Praise Team)",
+    leader: "Minister of Music Lisa Thompson",
+    activities: ["Choir", "Praise Team", "Instrumentalists", "Special Events"],
+    contact: "music@hoursofmercy.org",
+    isActive: true,
+  },
+];
+
+// Sample Configuration Data
+const configurationData = [
+  {
+    id: "prayer_types",
+    data: {
+      types: [
+        {
+          value: "healing",
+          label: "Physical Healing",
+          description: "Prayers for health and recovery",
+        },
+        {
+          value: "spiritual",
+          label: "Spiritual Growth",
+          description: "Guidance and spiritual matters",
+        },
+        {
+          value: "family",
+          label: "Family & Relationships",
+          description: "Marriage, children, and family issues",
+        },
+        {
+          value: "financial",
+          label: "Financial Provision",
+          description: "Employment, bills, and financial needs",
+        },
+        {
+          value: "guidance",
+          label: "Guidance & Decisions",
+          description: "Seeking God's direction",
+        },
+        {
+          value: "salvation",
+          label: "Salvation",
+          description: "For loved ones to know Christ",
+        },
+        {
+          value: "general",
+          label: "General Prayer",
+          description: "Other prayer needs",
+        },
+      ],
+    },
+  },
+  {
+    id: "giving_options",
+    data: {
+      options: [
+        {
+          type: "tithe",
+          title: "Tithes",
+          description: "Faithful giving of 10% as commanded in Scripture",
+          suggested: true,
+        },
+        {
+          type: "offering",
+          title: "General Offering",
+          description: "Support for church operations and ministry",
+          suggested: true,
+        },
+        {
+          type: "missions",
+          title: "Missions",
+          description: "Supporting missionaries and global outreach",
+          suggested: false,
+        },
+        {
+          type: "building",
+          title: "Building Fund",
+          description: "Church facility improvements and expansion",
+          suggested: false,
+        },
+        {
+          type: "youth",
+          title: "Youth Ministry",
+          description: "Supporting programs for young people",
+          suggested: false,
+        },
+        {
+          type: "community",
+          title: "Community Outreach",
+          description: "Local community service and assistance",
+          suggested: false,
+        },
+      ],
+      quickAmounts: [25, 50, 100, 250, 500, 1000],
+    },
+  },
+  {
+    id: "giving_amounts",
+    data: [25, 50, 100, 250, 500, 1000],
+  },
+  {
+    id: "giving_benefits",
+    data: [
+      "Support the growth of God's kingdom",
+      "Help fund community outreach programs",
+      "Maintain and improve church facilities",
+      "Support pastoral care and counseling",
+      "Fund youth and children's programs",
+      "Enable missionary work and evangelism",
+    ],
+  },
+  {
+    id: "contact_subjects",
+    data: {
+      subjects: [
+        "General Inquiry",
+        "Prayer Request",
+        "Pastoral Care",
+        "Ministry Information",
+        "Event Information",
+        "Volunteer Opportunities",
+        "Technical Support",
+        "Other",
+      ],
+    },
+  },
+  {
+    id: "sermon_series",
+    data: [
+      {
+        name: "Hours of Grace",
+        count: 8,
+        description: "Exploring God's mercy and grace in our daily lives",
+      },
+      {
+        name: "Foundations of Faith",
+        count: 12,
+        description: "Building strong spiritual foundations",
+      },
+      {
+        name: "Living Like Jesus",
+        count: 6,
+        description: "Practical Christianity in action",
+      },
+    ],
+  },
+];
+
+// Sample Church Information Data
+const churchInfoData = [
+  {
+    id: "beliefs",
+    data: {
+      beliefs: [
+        "We believe in the Trinity: Father, Son, and Holy Spirit",
+        "We believe in salvation through faith in Jesus Christ alone",
+        "We believe in the authority and inspiration of Scripture",
+        "We believe in the power of prayer and the gifts of the Spirit",
+        "We believe in the importance of fellowship and community",
+        "We believe in evangelism and missions",
+      ],
+    },
+  },
+  {
+    id: "values",
+    data: {
+      values: [
+        {
+          title: "Faith",
+          description: "Living by faith and trusting in God's promises",
+        },
+        {
+          title: "Love",
+          description: "Showing Christ's love to everyone we encounter",
+        },
+        {
+          title: "Unity",
+          description: "Coming together as one body in Christ",
+        },
+        {
+          title: "Service",
+          description: "Serving God and others with our gifts and talents",
+        },
+        {
+          title: "Growth",
+          description: "Continuously growing in our relationship with God",
+        },
+        {
+          title: "Excellence",
+          description: "Doing everything with excellence for God's glory",
+        },
+      ],
+    },
+  },
+  {
+    id: "contact_info",
+    data: {
+      address: "1480 Lincoln Ave, Dolton, Illinois 60419",
+      phone: "(708) 555-0124",
+      email: "info@hoursofmercy.org",
+      website: "www.hoursofmercy.org",
+      hours: {
+        office: "Monday - Friday: 9:00 AM - 5:00 PM",
+        sunday: "Sunday Services: 8:00 AM & 11:00 AM",
+        wednesday: "Wednesday Prayer: 7:00 PM",
+      },
+    },
+  },
+  {
+    id: "service_schedule",
+    data: {
+      services: [
+        {
+          name: "Sunday Morning Worship",
+          time: "8:00 AM & 11:00 AM",
+          description: "Traditional and Contemporary Services",
+        },
+        {
+          name: "Sunday School",
+          time: "9:30 AM",
+          description: "All ages - various classes available",
+        },
+        {
+          name: "Wednesday Prayer Meeting",
+          time: "7:00 PM",
+          description: "Community prayer and Bible study",
+        },
+        {
+          name: "Friday Night Prayer",
+          time: "7:00 PM",
+          description: "Intensive prayer and intercession",
+        },
+      ],
+    },
+  },
+  {
+    id: "prayer_promises",
+    data: {
+      promises: [
+        '"Ask and it will be given to you; seek and you will find; knock and the door will be opened to you." - Matthew 7:7',
+        '"The prayer of a righteous person is powerful and effective." - James 5:16',
+        '"Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God." - Philippians 4:6',
+        '"Therefore I tell you, whatever you ask for in prayer, believe that you have received it, and it will be yours." - Mark 11:24',
+      ],
+    },
+  },
+];
+
 // Function to seed all data
 async function seedFirestoreData() {
   console.log("🌱 Starting Firebase data seeding...");
@@ -694,6 +1131,42 @@ async function seedFirestoreData() {
       console.log(`✅ Added contact submission from: ${submission.fullName}`);
     }
 
+    // Seed Ministries
+    console.log("⛪ Seeding Ministries...");
+    for (const ministry of ministriesData) {
+      await setDoc(
+        doc(db, "ministries", ministry.title.replace(/ /g, "-").toLowerCase()),
+        {
+          ...ministry,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        }
+      );
+      console.log(`✅ Added ministry: ${ministry.title}`);
+    }
+
+    // Seed Configuration
+    console.log("⚙️ Seeding Configuration Data...");
+    for (const config of configurationData) {
+      await setDoc(doc(db, "configuration", config.id), {
+        ...config.data,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      console.log(`✅ Added configuration: ${config.id}`);
+    }
+
+    // Seed Church Information
+    console.log("🏛️ Seeding Church Information...");
+    for (const info of churchInfoData) {
+      await setDoc(doc(db, "churchInfo", info.id), {
+        ...info.data,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      console.log(`✅ Added church info: ${info.id}`);
+    }
+
     console.log("🎉 Database seeding completed successfully!");
     console.log("\n📊 Summary:");
     console.log(`📋 Staff Members: ${staffData.length}`);
@@ -706,6 +1179,9 @@ async function seedFirestoreData() {
     console.log(
       `📬 Contact Form Submissions: ${contactSubmissionsData.length}`
     );
+    console.log(`⛪ Ministries: ${ministriesData.length}`);
+    console.log(`⚙️ Configuration Entries: ${configurationData.length}`);
+    console.log(`🏛️ Church Information Entries: ${churchInfoData.length}`);
   } catch (error) {
     console.error("❌ Error seeding database:", error);
   }
@@ -720,7 +1196,10 @@ export {
   prayerRequestsData,
   newsletterSubscriptionsData,
   contactSubmissionsData,
+  ministriesData,
+  configurationData,
+  churchInfoData,
 };
 
-// Uncomment the line below to run the seeding when this file is executed
-// seedFirestoreData();
+// Run the seeding when this file is executed
+seedFirestoreData();

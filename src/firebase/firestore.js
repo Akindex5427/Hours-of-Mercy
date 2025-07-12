@@ -517,6 +517,153 @@ export const contactService = {
   },
 };
 
+// Ministries Service
+export const ministriesService = {
+  // Get all ministries
+  getAllMinistries: async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "ministries"));
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error("Error fetching ministries:", error);
+      throw error;
+    }
+  },
+
+  // Add new ministry
+  addMinistry: async (ministryData) => {
+    try {
+      const docRef = await addDoc(collection(db, "ministries"), {
+        ...ministryData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error("Error adding ministry:", error);
+      throw error;
+    }
+  },
+
+  // Update ministry
+  updateMinistry: async (id, ministryData) => {
+    try {
+      await updateDoc(doc(db, "ministries", id), {
+        ...ministryData,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error updating ministry:", error);
+      throw error;
+    }
+  },
+
+  // Delete ministry
+  deleteMinistry: async (id) => {
+    try {
+      await deleteDoc(doc(db, "ministries", id));
+    } catch (error) {
+      console.error("Error deleting ministry:", error);
+      throw error;
+    }
+  },
+};
+
+// Church Configuration Service (for prayer types, giving options, beliefs, etc.)
+export const configService = {
+  // Get configuration by type
+  getConfig: async (configType) => {
+    try {
+      const docRef = doc(db, "configuration", configType);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      } else {
+        console.log("No such configuration!");
+        return null;
+      }
+    } catch (error) {
+      console.error(`Error fetching ${configType} configuration:`, error);
+      throw error;
+    }
+  },
+
+  // Set configuration
+  setConfig: async (configType, configData) => {
+    try {
+      await setDoc(doc(db, "configuration", configType), {
+        ...configData,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(`Error setting ${configType} configuration:`, error);
+      throw error;
+    }
+  },
+
+  // Update configuration
+  updateConfig: async (configType, configData) => {
+    try {
+      await updateDoc(doc(db, "configuration", configType), {
+        ...configData,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(`Error updating ${configType} configuration:`, error);
+      throw error;
+    }
+  },
+};
+
+// Church Information Service (for beliefs, values, staff info, etc.)
+export const churchInfoService = {
+  // Get church information by section
+  getChurchInfo: async (section) => {
+    try {
+      const docRef = doc(db, "church_info", section);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      } else {
+        console.log(`No ${section} information found!`);
+        return null;
+      }
+    } catch (error) {
+      console.error(`Error fetching ${section} information:`, error);
+      throw error;
+    }
+  },
+
+  // Set church information
+  setChurchInfo: async (section, infoData) => {
+    try {
+      await setDoc(doc(db, "church_info", section), {
+        ...infoData,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(`Error setting ${section} information:`, error);
+      throw error;
+    }
+  },
+
+  // Update church information
+  updateChurchInfo: async (section, infoData) => {
+    try {
+      await updateDoc(doc(db, "church_info", section), {
+        ...infoData,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(`Error updating ${section} information:`, error);
+      throw error;
+    }
+  },
+};
+
 // Real-time listener for live updates
 export const setupRealtimeListener = (collectionName, callback) => {
   const collectionRef = collection(db, collectionName);

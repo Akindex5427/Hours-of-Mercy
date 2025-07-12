@@ -26,7 +26,11 @@ import {
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useUpcomingEvents, useSermons } from "../hooks/useFirestore";
+import {
+  useUpcomingEvents,
+  useSermons,
+  useMinistries,
+} from "../hooks/useFirestore";
 import HOMImage from "../assets/HOM.png";
 
 const MotionBox = motion(Box);
@@ -71,29 +75,61 @@ const HomePage = () => {
   const upcomingEvents =
     firebaseEvents?.length > 0 ? firebaseEvents : fallbackEvents;
 
-  const ministries = [
+  const {
+    ministries: firebaseMinistries,
+    loading: ministriesLoading,
+    error: ministriesError,
+  } = useMinistries();
+
+  // Fallback ministries data
+  const fallbackMinistries = [
     {
       title: "Youth Ministry",
       description:
         "Empowering the next generation through faith and fellowship.",
-      icon: <School />,
+      icon: "school",
     },
     {
       title: "Women's Fellowship",
       description: "Building strong relationships among women of faith.",
-      icon: <Group />,
+      icon: "group",
     },
     {
       title: "Men's Ministry",
       description: "Growing together as men of God and leaders.",
-      icon: <People />,
+      icon: "people",
     },
     {
       title: "Community Outreach",
       description: "Serving our community with love and compassion.",
-      icon: <VolunteerActivism />,
+      icon: "volunteer_activism",
     },
   ];
+
+  const ministries =
+    firebaseMinistries?.length > 0 ? firebaseMinistries : fallbackMinistries;
+
+  // Helper function to get icon component from string
+  const getIconComponent = (iconName) => {
+    switch (iconName) {
+      case "school":
+        return <School />;
+      case "group":
+        return <Group />;
+      case "people":
+        return <People />;
+      case "volunteer_activism":
+        return <VolunteerActivism />;
+      case "child_care":
+        return <School />; // Fallback for children
+      case "elderly":
+        return <People />; // Fallback for seniors
+      case "music_note":
+        return <People />; // Fallback for music
+      default:
+        return <Church />;
+    }
+  };
 
   return (
     <>
@@ -670,7 +706,7 @@ const HomePage = () => {
                       },
                     }}
                   >
-                    {ministry.icon}
+                    {getIconComponent(ministry.icon)}
                   </IconButton>
                   <Typography
                     variant="h6"

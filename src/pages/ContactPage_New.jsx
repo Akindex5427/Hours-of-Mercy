@@ -34,7 +34,6 @@ import { motion } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import GoogleMap from "../components/GoogleMap";
 
 const MotionCard = motion(Card);
 const MotionBox = motion(Box);
@@ -68,7 +67,7 @@ const ContactPage = () => {
   ];
 
   const churchContactInfo = {
-    address: "14801 Lincoln Ave, Dolton, Illinois 60419",
+    address: "1480 Lincoln Ave, Dolton, Illinois 60419",
     phone: "(708) 555-0123",
     email: "info@hoursofmercy.org",
   };
@@ -409,7 +408,7 @@ const ContactPage = () => {
                   fullWidth
                   startIcon={<Directions />}
                   sx={{ mt: 2 }}
-                  href="https://maps.google.com/?q=14801+Lincoln+Ave,+Dolton,+IL"
+                  href="https://maps.google.com/?q=1480+Lincoln+Ave,+Dolton,+IL"
                   target="_blank"
                 >
                   Get Directions
@@ -514,50 +513,20 @@ const ContactPage = () => {
             We're located in the heart of Dolton, Illinois. Come and worship
             with us!
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            <strong>Address:</strong> 14801 Lincoln Ave, Dolton, Illinois 60419
-          </Typography>
-
-          <GoogleMap
-            address="14801 Lincoln Ave, Dolton, Illinois 60419"
-            churchName="Christ Apostolic Church Hours of Mercy"
-            height={400}
-            zoom={16}
-          />
-
           <Box
             sx={{
-              mt: 3,
+              height: 300,
+              bgcolor: "grey.200",
+              borderRadius: 2,
               display: "flex",
+              alignItems: "center",
               justifyContent: "center",
-              gap: 2,
-              flexWrap: "wrap",
+              mt: 2,
             }}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<Directions />}
-              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-                "14801 Lincoln Ave, Dolton, Illinois 60419"
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Get Driving Directions
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<LocationOn />}
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                "14801 Lincoln Ave, Dolton, Illinois 60419"
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View on Google Maps
-            </Button>
+            <Typography variant="h6" color="text.secondary">
+              Interactive Map Coming Soon
+            </Typography>
           </Box>
         </Paper>
       </Container>

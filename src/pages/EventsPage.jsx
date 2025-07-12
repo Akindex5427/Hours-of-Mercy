@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   Box,
@@ -17,6 +17,7 @@ import {
   Tabs,
   Tab,
   Paper,
+  Divider,
 } from "@mui/material";
 import {
   Event as EventIcon,
@@ -30,6 +31,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
+import { useEvents, useRecurringEvents } from "../hooks/useFirestore";
 
 const MotionCard = motion(Card);
 const MotionBox = motion(Box);
@@ -39,102 +41,14 @@ const EventsPage = () => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [recurringEvents, setRecurringEvents] = useState([]);
 
-  const events = [
-    {
-      id: 1,
-      title: "Sunday Worship Service",
-      date: "2025-07-06",
-      time: "8:00 AM & 11:00 AM",
-      endTime: "12:30 PM",
-      location: "Main Sanctuary",
-      description:
-        "Join us for powerful worship, inspiring music, and life-changing messages from God's Word.",
-      category: "Worship",
-      recurring: "Weekly",
-      pastor: "Pastor John Smith",
-      isRecurring: true,
-      image: "/api/placeholder/400/250",
-    },
-    {
-      id: 2,
-      title: "Wednesday Prayer Meeting",
-      date: "2025-07-09",
-      time: "7:00 PM",
-      endTime: "8:30 PM",
-      location: "Fellowship Hall",
-      description:
-        "Come together as we seek God's face in prayer for our church, community, and world.",
-      category: "Prayer",
-      recurring: "Weekly",
-      pastor: "Pastor Mary Johnson",
-      isRecurring: true,
-      image: "/api/placeholder/400/250",
-    },
-    {
-      id: 3,
-      title: "Youth Conference 2025",
-      date: "2025-07-15",
-      time: "9:00 AM",
-      endTime: "6:00 PM",
-      endDate: "2025-07-17",
-      location: "Church Campus",
-      description:
-        "A three-day conference designed to inspire and empower our young people in their faith journey.",
-      category: "Youth",
-      pastor: "Pastor David Wilson",
-      isRecurring: false,
-      speakers: [
-        "Pastor David Wilson",
-        "Youth Leader Sarah Brown",
-        "Guest Speaker Mike Johnson",
-      ],
-      image: "/api/placeholder/400/250",
-    },
-    {
-      id: 4,
-      title: "Women's Fellowship Breakfast",
-      date: "2025-07-12",
-      time: "9:00 AM",
-      endTime: "11:00 AM",
-      location: "Fellowship Hall",
-      description:
-        "Ladies, join us for breakfast, fellowship, and encouragement as we study God's Word together.",
-      category: "Fellowship",
-      recurring: "Monthly",
-      pastor: "Sister Janet Williams",
-      isRecurring: true,
-      image: "/api/placeholder/400/250",
-    },
-    {
-      id: 5,
-      title: "Men's Bible Study",
-      date: "2025-07-10",
-      time: "6:30 PM",
-      endTime: "8:00 PM",
-      location: "Conference Room",
-      description:
-        "Men of God, come study the Word and build strong brotherly bonds in Christ.",
-      category: "Study",
-      recurring: "Weekly",
-      pastor: "Brother Robert Davis",
-      isRecurring: true,
-      image: "/api/placeholder/400/250",
-    },
-    {
-      id: 6,
-      title: "Community Outreach Day",
-      date: "2025-07-19",
-      time: "10:00 AM",
-      endTime: "4:00 PM",
-      location: "Various Locations",
-      description:
-        "Join us as we serve our community through food distribution, neighborhood cleanup, and sharing God's love.",
-      category: "Outreach",
-      isRecurring: false,
-      image: "/api/placeholder/400/250",
-    },
-  ];
+  // Firebase hooks
+  const { events: firebaseEvents, loading, error } = useEvents();
+  const { getActiveTemplates } = useRecurringEvents();
+
+  // Use Firebase data
+  const events = firebaseEvents || [];
 
   const categories = [
     "All",
@@ -146,16 +60,88 @@ const EventsPage = () => {
     "Outreach",
   ];
 
-  const filteredEvents = events.filter((event) => {
+  // Helper function to check if an event occurs on a specific date
+  const eventOccursOnDate = (event, targetDate) => {
+    const eventDate = dayjs(event.date);
+    const target = dayjs(targetDate);
+
+    // For non-recurring events, simple date match
+    if (!event.isRecurring) {
+      return eventDate.isSame(target, "day");
+    }
+
+    // For recurring events
+    if (event.recurringType === "weekly") {
+      // Check if the target date has the same day of week as the event
+      return eventDate.day() === target.day();
+    }
+
+    if (event.recurringType === "monthly") {
+      // Check if the target date has the same day of month as the event
+      return eventDate.date() === target.date();
+    }
+
+    return false;
+  };
+
+  // Comprehensive recurring events generation
+  const generateRecurringEventsForDate = async (targetDate) => {
+    try {
+      const templates = await getActiveTemplates();
+      const { generateRecurringEventInstances } = await import(
+        "../firebase/recurringEventsService"
+      );
+
+      // Generate events for the selected date (single day range)
+      const startDate = dayjs(targetDate).startOf("day");
+      const endDate = dayjs(targetDate).endOf("day");
+
+      return generateRecurringEventInstances(templates, startDate, endDate);
+    } catch (error) {
+      console.error("Error generating recurring events:", error);
+      return [];
+    }
+  };
+
+  // Enhanced filtering logic that includes date filtering
+  const filteredEvents = (() => {
+    let eventsToFilter = [...events, ...recurringEvents];
+
+    // For selected date filtering, we need to handle recurring events
+    if (selectedDate) {
+      return eventsToFilter.filter((event) => {
+        // Category filter
+        const categoryMatch =
+          selectedTab === 0 || event.category === categories[selectedTab];
+
+        // Date filter - only show events for the selected date
+        const dateMatch = eventOccursOnDate(event, selectedDate);
+
+        return categoryMatch && dateMatch;
+      });
+    }
+
+    // If no date is selected, show all upcoming events
+    return eventsToFilter.filter((event) => {
+      const categoryMatch =
+        selectedTab === 0 || event.category === categories[selectedTab];
+      const isUpcoming = dayjs(event.date).isAfter(dayjs().subtract(1, "day"));
+      return categoryMatch && isUpcoming;
+    });
+  })();
+
+  // For displaying upcoming events (separate from date-filtered events)
+  const allFilteredEvents = events.filter((event) => {
     const categoryMatch =
       selectedTab === 0 || event.category === categories[selectedTab];
     return categoryMatch;
   });
 
-  const upcomingEvents = filteredEvents.filter((event) =>
+  const upcomingEvents = allFilteredEvents.filter((event) =>
     dayjs(event.date).isAfter(dayjs().subtract(1, "day"))
   );
-  const todaysEvents = filteredEvents.filter((event) =>
+
+  const todaysEvents = allFilteredEvents.filter((event) =>
     dayjs(event.date).isSame(dayjs(), "day")
   );
 
@@ -194,6 +180,20 @@ const EventsPage = () => {
     };
     return colors[category] || "default";
   };
+
+  // Load recurring events when the selected date changes
+  React.useEffect(() => {
+    const loadRecurringEvents = async () => {
+      if (selectedDate) {
+        const recurringEventInstances = await generateRecurringEventsForDate(
+          selectedDate
+        );
+        setRecurringEvents(recurringEventInstances);
+      }
+    };
+
+    loadRecurringEvents();
+  }, [selectedDate, getActiveTemplates]);
 
   return (
     <>
@@ -298,8 +298,17 @@ const EventsPage = () => {
         </Grid>
 
         {/* Events Grid */}
+        {selectedDate && (
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="h6" color="primary" gutterBottom>
+              Events for {dayjs(selectedDate).format("MMMM D, YYYY")}
+            </Typography>
+            <Divider />
+          </Box>
+        )}
+
         <Grid container spacing={3}>
-          {upcomingEvents.map((event, index) => (
+          {filteredEvents.map((event, index) => (
             <Grid item xs={12} md={6} lg={4} key={event.id}>
               <MotionCard
                 initial={{ y: 50, opacity: 0 }}
@@ -421,14 +430,20 @@ const EventsPage = () => {
           ))}
         </Grid>
 
-        {upcomingEvents.length === 0 && (
+        {filteredEvents.length === 0 && (
           <Paper sx={{ p: 4, textAlign: "center", mt: 4 }}>
             <EventIcon sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />
             <Typography variant="h6" color="text.secondary" gutterBottom>
-              No upcoming events found
+              {selectedDate
+                ? `No events found for ${dayjs(selectedDate).format(
+                    "MMMM D, YYYY"
+                  )}`
+                : "No upcoming events found"}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Check back soon for new events and activities.
+              {selectedDate
+                ? 'Try selecting a different date or check the "All Events" category.'
+                : "Check back soon for new events and activities."}
             </Typography>
           </Paper>
         )}

@@ -29,7 +29,11 @@ import {
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
-import { usePrayerRequests } from "../hooks/useFirestore";
+import {
+  usePrayerRequests,
+  useConfig,
+  useChurchInfo,
+} from "../hooks/useFirestore";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { logAuditEvent } from "../firebase/audit";
@@ -63,27 +67,14 @@ const PrayerRequestPage = () => {
     error: firebaseError,
   } = usePrayerRequests();
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      prayerRequest: "",
-      requestType: "general",
-      isUrgent: false,
-      isAnonymous: false,
-      allowSharing: false,
-    },
-  });
+  // Get prayer types and promises from Firebase
+  const { config: prayerTypesConfig, loading: prayerTypesLoading } =
+    useConfig("prayer_types");
+  const { churchInfo: prayerPromisesInfo, loading: promisesLoading } =
+    useChurchInfo("prayer_promises");
 
-  const prayerTypes = [
+  // Use Firebase data or fallback to static data
+  const prayerTypes = prayerTypesConfig?.types || [
     {
       value: "healing",
       label: "Physical Healing",
@@ -121,12 +112,32 @@ const PrayerRequestPage = () => {
     },
   ];
 
-  const prayerPromises = [
+  const prayerPromises = prayerPromisesInfo?.promises || [
     '"Ask and it will be given to you; seek and you will find; knock and the door will be opened to you." - Matthew 7:7',
     '"The prayer of a righteous person is powerful and effective." - James 5:16',
     '"Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God." - Philippians 4:6',
     '"Therefore I tell you, whatever you ask for in prayer, believe that you have received it, and it will be yours." - Mark 11:24',
   ];
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      prayerRequest: "",
+      requestType: "general",
+      isUrgent: false,
+      isAnonymous: false,
+      allowSharing: false,
+    },
+  });
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);

@@ -8,6 +8,9 @@ import {
   newsletterService,
   contactService,
   memberService,
+  ministriesService,
+  configService,
+  churchInfoService,
   setupRealtimeListener,
 } from "../firebase/firestore";
 import { authService, getAuthErrorMessage } from "../firebase/auth";
@@ -531,5 +534,213 @@ export const useMembers = () => {
     error,
     updateMemberStatus,
     deleteMember,
+  };
+};
+
+// Hook for ministries data
+export const useMinistries = () => {
+  const [ministries, setMinistries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMinistries = async () => {
+      try {
+        setLoading(true);
+        const ministriesData = await ministriesService.getAllMinistries();
+        setMinistries(ministriesData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMinistries();
+  }, []);
+
+  const addMinistry = async (ministryData) => {
+    try {
+      const id = await ministriesService.addMinistry(ministryData);
+      const newMinistry = { id, ...ministryData };
+      setMinistries((prev) => [...prev, newMinistry]);
+      return id;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  return { ministries, loading, error, addMinistry };
+};
+
+// Hook for configuration data
+export const useConfig = (configType) => {
+  const [config, setConfig] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        setLoading(true);
+        const configData = await configService.getConfig(configType);
+        setConfig(configData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (configType) {
+      fetchConfig();
+    }
+  }, [configType]);
+
+  const updateConfig = async (configData) => {
+    try {
+      await configService.updateConfig(configType, configData);
+      setConfig((prev) => ({ ...prev, ...configData }));
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  return { config, loading, error, updateConfig };
+};
+
+// Hook for church information
+export const useChurchInfo = (section) => {
+  const [churchInfo, setChurchInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchChurchInfo = async () => {
+      try {
+        setLoading(true);
+        const infoData = await churchInfoService.getChurchInfo(section);
+        setChurchInfo(infoData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (section) {
+      fetchChurchInfo();
+    }
+  }, [section]);
+
+  const updateChurchInfo = async (infoData) => {
+    try {
+      await churchInfoService.updateChurchInfo(section, infoData);
+      setChurchInfo((prev) => ({ ...prev, ...infoData }));
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  return { churchInfo, loading, error, updateChurchInfo };
+};
+
+// Hook for recurring events templates
+export const useRecurringEvents = () => {
+  const [templates, setTemplates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      try {
+        setLoading(true);
+        const { recurringEventsService } = await import(
+          "../firebase/recurringEventsService"
+        );
+        const templatesData = await recurringEventsService.getTemplates();
+        setTemplates(templatesData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTemplates();
+  }, []);
+
+  const addTemplate = async (templateData) => {
+    try {
+      const { recurringEventsService } = await import(
+        "../firebase/recurringEventsService"
+      );
+      const id = await recurringEventsService.addTemplate(templateData);
+      const newTemplate = { id, ...templateData };
+      setTemplates((prev) => [...prev, newTemplate]);
+      return id;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const updateTemplate = async (id, updates) => {
+    try {
+      const { recurringEventsService } = await import(
+        "../firebase/recurringEventsService"
+      );
+      await recurringEventsService.updateTemplate(id, updates);
+      setTemplates((prev) =>
+        prev.map((template) =>
+          template.id === id ? { ...template, ...updates } : template
+        )
+      );
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const deleteTemplate = async (id) => {
+    try {
+      const { recurringEventsService } = await import(
+        "../firebase/recurringEventsService"
+      );
+      await recurringEventsService.deleteTemplate(id);
+      setTemplates((prev) => prev.filter((template) => template.id !== id));
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const getActiveTemplates = async () => {
+    try {
+      const { recurringEventsService } = await import(
+        "../firebase/recurringEventsService"
+      );
+      return await recurringEventsService.getActiveTemplates();
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  return {
+    templates,
+    loading,
+    error,
+    addTemplate,
+    updateTemplate,
+    deleteTemplate,
+    getActiveTemplates,
   };
 };

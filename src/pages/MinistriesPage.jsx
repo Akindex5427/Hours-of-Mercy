@@ -32,139 +32,16 @@ import {
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useMinistries } from "../hooks/useFirestore";
 
 const MotionCard = motion(Card);
 const MotionBox = motion(Box);
 
 const MinistriesPage = () => {
-  const ministries = [
-    {
-      id: 1,
-      title: "Youth Ministry",
-      description:
-        "Empowering the next generation through faith, fellowship, and fun activities designed to build character and spiritual growth.",
-      icon: <School />,
-      image: "/api/placeholder/400/250",
-      leader: "Pastor David Wilson",
-      meetingTime: "Sundays 6:00 PM",
-      location: "Youth Center",
-      ageGroup: "13-18 years",
-      activities: [
-        "Weekly youth services",
-        "Bible study groups",
-        "Summer camps and retreats",
-        "Community service projects",
-        "Sports and recreation",
-        "Leadership development",
-      ],
-      color: "success",
-    },
-    {
-      id: 2,
-      title: "Women's Fellowship",
-      description:
-        "Building strong relationships among women of faith through Bible study, prayer, and mutual support.",
-      icon: <Group />,
-      image: "/api/placeholder/400/250",
-      leader: "Sister Janet Williams",
-      meetingTime: "Saturdays 10:00 AM",
-      location: "Fellowship Hall",
-      ageGroup: "All adult women",
-      activities: [
-        "Monthly fellowship breakfast",
-        "Bible study and devotions",
-        "Prayer circles",
-        "Community outreach",
-        "Mentorship programs",
-        "Special events and retreats",
-      ],
-      color: "info",
-    },
-    {
-      id: 3,
-      title: "Men's Ministry",
-      description:
-        "Growing together as men of God, developing leadership skills, and building brotherhood in Christ.",
-      icon: <People />,
-      image: "/api/placeholder/400/250",
-      leader: "Brother Robert Davis",
-      meetingTime: "Thursdays 7:00 PM",
-      location: "Conference Room",
-      ageGroup: "All adult men",
-      activities: [
-        "Weekly Bible study",
-        "Monthly breakfast fellowship",
-        "Men's retreats",
-        "Community service",
-        "Accountability groups",
-        "Leadership training",
-      ],
-      color: "warning",
-    },
-    {
-      id: 4,
-      title: "Community Outreach",
-      description:
-        "Serving our community with love and compassion, meeting physical and spiritual needs.",
-      icon: <VolunteerActivism />,
-      image: "/api/placeholder/400/250",
-      leader: "Pastor Mary Johnson",
-      meetingTime: "Saturdays 9:00 AM",
-      location: "Various Locations",
-      ageGroup: "All ages welcome",
-      activities: [
-        "Food pantry distribution",
-        "Homeless ministry",
-        "Prison outreach",
-        "Hospital visitation",
-        "Community events",
-        "Disaster relief",
-      ],
-      color: "error",
-    },
-    {
-      id: 5,
-      title: "Worship Ministry",
-      description:
-        "Leading the congregation in worship through music, praise, and creating an atmosphere for encounter with God.",
-      icon: <MusicNote />,
-      image: "/api/placeholder/400/250",
-      leader: "Minister Sarah Brown",
-      meetingTime: "Wednesdays 7:30 PM",
-      location: "Main Sanctuary",
-      ageGroup: "All ages",
-      activities: [
-        "Choir practice",
-        "Instrumental team",
-        "Worship leading",
-        "Special music events",
-        "Training workshops",
-        "Youth worship team",
-      ],
-      color: "secondary",
-    },
-    {
-      id: 6,
-      title: "Children's Ministry",
-      description:
-        "Nurturing children in their faith journey through age-appropriate teaching and activities.",
-      icon: <EmojiEvents />,
-      image: "/api/placeholder/400/250",
-      leader: "Sister Lisa Thompson",
-      meetingTime: "Sundays 11:00 AM",
-      location: "Children's Wing",
-      ageGroup: "3-12 years",
-      activities: [
-        "Sunday School classes",
-        "Vacation Bible School",
-        "Children's choir",
-        "Holiday programs",
-        "Bible memory competitions",
-        "Fun activities and games",
-      ],
-      color: "primary",
-    },
-  ];
+  // Firebase hook
+  const { ministries: firebaseMinistries, loading, error } = useMinistries();
+
+  const ministries = firebaseMinistries || [];
 
   const getIconForMinistry = (ministry) => {
     const iconMap = {

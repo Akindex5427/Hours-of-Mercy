@@ -22,12 +22,17 @@ import {
   EmojiEvents,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import { useChurchInfo } from "../hooks/useFirestore";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
 
 const AboutPage = () => {
-  const beliefs = [
+  // Firebase hooks
+  const { churchInfo: beliefsData } = useChurchInfo("beliefs");
+  const { churchInfo: valuesData } = useChurchInfo("values");
+
+  const beliefs = beliefsData?.beliefs || [
     "The Bible is the inspired and infallible Word of God",
     "Salvation through faith in Jesus Christ alone",
     "The Trinity: Father, Son, and Holy Spirit",
@@ -38,7 +43,7 @@ const AboutPage = () => {
     "The Great Commission to spread the Gospel",
   ];
 
-  const values = [
+  const values = valuesData?.values || [
     {
       title: "Scripture-Centered",
       description:
