@@ -365,11 +365,48 @@ const CloudFunctionsTest = () => {
                     }}
                   >
                     <Typography variant="subtitle2" color="primary">
-                      📅 Event Reminders
+                      📅 Daily Event Reminders
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Sends daily event reminders to newsletter subscribers
-                      (runs at 9 AM).
+                      Sends daily email reminders for tomorrow's events at 9 AM.
+                    </Typography>
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={4}>
+                  <Box
+                    sx={{
+                      p: 2,
+                      border: 1,
+                      borderColor: "grey.300",
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="subtitle2" color="primary">
+                      📅 Weekly Newsletter
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Sends weekly newsletter to subscribers every Sunday at 8
+                      AM.
+                    </Typography>
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={4}>
+                  <Box
+                    sx={{
+                      p: 2,
+                      border: 1,
+                      borderColor: "grey.300",
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="subtitle2" color="primary">
+                      📅 Monthly Newsletter
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Sends monthly newsletter to subscribers on the 1st at 10
+                      AM.
                     </Typography>
                   </Box>
                 </Grid>

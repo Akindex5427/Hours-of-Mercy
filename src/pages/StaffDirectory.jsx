@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   Box,
@@ -15,6 +15,8 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import {
   Email,
@@ -28,12 +30,36 @@ import {
   VolunteerActivism,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import { useStaff } from "../hooks/useFirestore";
 
 const MotionCard = motion(Card);
 const MotionBox = motion(Box);
 
 const StaffDirectory = () => {
-  const staff = [
+  // Firebase hooks
+  const { staff, loading, error } = useStaff();
+
+  // Force timeout after 10 seconds to prevent infinite loading
+  const [forceShowContent, setForceShowContent] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setForceShowContent(true);
+    }, 10000); // 10 seconds timeout
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Debug logging
+  console.log("StaffDirectory Debug:", {
+    staff,
+    loading,
+    error,
+    forceShowContent,
+  });
+
+  // Static fallback data in case Firebase is not ready
+  const staticStaff = [
     {
       id: 1,
       name: "Peter Olawale Sunday",
@@ -199,6 +225,39 @@ const StaffDirectory = () => {
     return colors[department] || "default";
   };
 
+  // Use Firebase data if available, otherwise use static data
+  const displayStaff = staff && staff.length > 0 ? staff : staticStaff;
+
+  console.log("Display staff:", displayStaff);
+
+  // Show loading state only for the first few seconds
+  if (loading && !forceShowContent) {
+    console.log("StaffDirectory: Currently loading...");
+    return (
+      <Container maxWidth="lg" sx={{ py: 6 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "60vh",
+            gap: 2,
+          }}
+        >
+          <CircularProgress size={60} />
+          <Typography variant="body1">Loading staff directory...</Typography>
+        </Box>
+      </Container>
+    );
+  }
+
+  // Show error state but continue with static data
+  if (error) {
+    console.log("StaffDirectory error:", error);
+    // Continue rendering with static data - don't return early
+  }
+
   return (
     <>
       <Helmet>
@@ -219,12 +278,7 @@ const StaffDirectory = () => {
         }}
       >
         <Container maxWidth="lg">
-          <MotionBox
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            sx={{ textAlign: "center" }}
-          >
+          <Box sx={{ textAlign: "center" }}>
             <Typography variant="h1" gutterBottom sx={{ fontWeight: 700 }}>
               Our Staff
             </Typography>
@@ -234,19 +288,20 @@ const StaffDirectory = () => {
             >
               Meet the dedicated team serving our church family
             </Typography>
-          </MotionBox>
+          </Box>
         </Container>
       </Box>
 
       <Container maxWidth="lg" sx={{ py: 6 }}>
+        {/* Error Alert */}
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            Error loading staff data: {error}. Showing sample data instead.
+          </Alert>
+        )}
+
         {/* Department Overview */}
-        <MotionBox
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          sx={{ mb: 6 }}
-        >
+        <Box sx={{ mb: 6 }}>
           <Typography
             variant="h4"
             gutterBottom
@@ -276,17 +331,13 @@ const StaffDirectory = () => {
               </Grid>
             ))}
           </Grid>
-        </MotionBox>
+        </Box>
 
         {/* Staff Cards */}
         <Grid container spacing={4}>
-          {staff.map((member, index) => (
+          {displayStaff.map((member, index) => (
             <Grid item xs={12} md={6} key={member.id}>
-              <MotionCard
-                initial={{ y: 50, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: index * 0.1, duration: 0.8 }}
-                viewport={{ once: true }}
+              <Card
                 sx={{
                   height: "100%",
                   "&:hover": {
@@ -435,19 +486,13 @@ const StaffDirectory = () => {
                     Contact {member.name.split(" ")[1]}
                   </Button>
                 </CardContent>
-              </MotionCard>
+              </Card>
             </Grid>
           ))}
         </Grid>
 
         {/* Contact Section */}
-        <MotionBox
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          sx={{ mt: 8 }}
-        >
+        <Box sx={{ mt: 8 }}>
           <Paper
             sx={{
               p: 4,
@@ -496,16 +541,10 @@ const StaffDirectory = () => {
               </Button>
             </Box>
           </Paper>
-        </MotionBox>
+        </Box>
 
         {/* Join Our Team */}
-        <MotionBox
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          sx={{ mt: 6 }}
-        >
+        <Box sx={{ mt: 6 }}>
           <Card>
             <CardContent sx={{ p: 4, textAlign: "center" }}>
               <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
@@ -521,7 +560,7 @@ const StaffDirectory = () => {
               </Button>
             </CardContent>
           </Card>
-        </MotionBox>
+        </Box>
       </Container>
     </>
   );

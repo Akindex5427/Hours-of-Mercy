@@ -642,12 +642,27 @@ const GivingPage = () => {
                     </ListItemIcon>
                     <ListItemText
                       primary="Automatic Bank Transfer"
-                      secondary="Contact the church office"
+                      secondary={
+                        <Box>
+                          <Typography variant="caption" display="block">
+                            Contact the church office
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            display="block"
+                            sx={{ fontWeight: 600, mt: 0.5 }}
+                          >
+                            Zelle: (773) 977-9630
+                          </Typography>
+                          <Typography variant="caption" display="block">
+                            Zelle Name: CAC Upper Room
+                          </Typography>
+                        </Box>
+                      }
                       primaryTypographyProps={{
                         variant: "body2",
                         fontWeight: 600,
                       }}
-                      secondaryTypographyProps={{ variant: "caption" }}
                     />
                   </ListItem>
                   <ListItem sx={{ px: 0 }}>
@@ -656,7 +671,7 @@ const GivingPage = () => {
                     </ListItemIcon>
                     <ListItemText
                       primary="In-Person Offering"
-                      secondary="During Sunday service"
+                      secondary="During Church service"
                       primaryTypographyProps={{
                         variant: "body2",
                         fontWeight: 600,

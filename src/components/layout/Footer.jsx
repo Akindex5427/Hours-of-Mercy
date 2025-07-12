@@ -59,16 +59,16 @@ const Footer = () => {
           {/* Church Info */}
           <Grid item xs={12} md={4}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 700 }}>
-              Hours of Mercy
+              Christ Apostolic
             </Typography>
             <Typography
               variant="subtitle1"
               sx={{ color: "secondary.main", mb: 2 }}
             >
-              Christ Apostolic Church
+              Hours of Mercy
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-              <LocationOn sx={{ mr: 1, fontSize: 20 }} />
+              <LocationOn sx={{ mr: 1, fontSize: 30 }} />
               <Typography variant="body2">
                 14801 Lincoln Ave
                 <br />
@@ -77,7 +77,7 @@ const Footer = () => {
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
               <Phone sx={{ mr: 1, fontSize: 20 }} />
-              <Typography variant="body2">(708) 555-0123</Typography>
+              <Typography variant="body2">(773) 977-9630</Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
               <Email sx={{ mr: 1, fontSize: 20 }} />
@@ -122,24 +122,24 @@ const Footer = () => {
                 </Typography>
               </Box>
               <Typography variant="body2" sx={{ ml: 3, mb: 1 }}>
-                8:00 AM - Early Service
+                8:00 AM - Sunday School
               </Typography>
               <Typography variant="body2" sx={{ ml: 3, mb: 2 }}>
-                11:00 AM - Main Service
+                10:00 AM - Main Service
               </Typography>
 
               <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
                 Wednesday Prayer Meeting
               </Typography>
               <Typography variant="body2" sx={{ ml: 3, mb: 2 }}>
-                7:00 PM
+                6:00 PM - 8:00 PM
               </Typography>
 
               <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
-                Friday Bible Study
+                Friday Night Vigil
               </Typography>
               <Typography variant="body2" sx={{ ml: 3 }}>
-                7:30 PM
+                10:00 PM - 12:00 AM
               </Typography>
             </Box>
           </Grid>
@@ -150,8 +150,8 @@ const Footer = () => {
               Stay Connected
             </Typography>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              Subscribe to our newsletter for updates on services, events, and
-              church news.
+              Subscribe to our newsletter for daily event reminders, weekly
+              updates, and monthly church news.
             </Typography>
             <Box
               component="form"
@@ -258,8 +258,8 @@ const Footer = () => {
 
         <Box sx={{ textAlign: "center" }}>
           <Typography variant="body2" sx={{ opacity: 0.8 }}>
-            © {new Date().getFullYear()} Christ Apostolic Church Hours of Mercy.
-            All rights reserved.
+            © {new Date().getFullYear()} Christ Apostolic Hours of Mercy. All
+            rights reserved.
           </Typography>
           <Typography variant="body2" sx={{ opacity: 0.6, mt: 0.5 }}>
             Built with love for our community

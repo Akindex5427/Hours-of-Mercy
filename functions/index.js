@@ -14,6 +14,8 @@ admin.initializeApp();
 exports.sendPrayerRequestNotification = require("./src/prayerRequestNotification");
 exports.sendEventReminders = require("./src/eventReminders");
 exports.sendNewsletterWelcome = require("./src/newsletterWelcome");
+exports.sendWeeklyNewsletter = require("./src/weeklyNewsletter");
+exports.sendMonthlyNewsletter = require("./src/monthlyNewsletter");
 exports.sendContactFormNotification = require("./src/contactFormNotification");
 exports.processStripeWebhook = require("./src/stripeWebhook");
 exports.generateAnalyticsReport = require("./src/analyticsReport");
