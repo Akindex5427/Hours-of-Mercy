@@ -54,21 +54,21 @@ const HomePage = () => {
     {
       title: "Sunday Worship Service",
       date: "Every Sunday",
-      time: "8:00 AM & 11:00 AM",
+      time: "8:00 AM to 11:00 AM",
       description: "Join us for uplifting worship and powerful messages.",
     },
     {
       title: "Wednesday Prayer Meeting",
       date: "Every Wednesday",
-      time: "7:00 PM",
+      time: "6:00 PM - 8:00 PM",
       description: "Come together in prayer and fellowship.",
     },
-    {
-      title: "Youth Conference 2025",
-      date: "July 15-17, 2025",
-      time: "All Day",
-      description: "A special conference for our young people.",
-    },
+    // {
+    //   title: "Youth Conference 2025",
+    //   date: "July 15-17, 2025",
+    //   time: "All Day",
+    //   description: "A special conference for our young people.",
+    // },
   ];
 
   // Use Firebase data if available, otherwise use fallback data
@@ -134,10 +134,10 @@ const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>Christ Apostolic Church Hours of Mercy - Welcome Home</title>
+        <title>Christ Apostolic Hours of Mercy - Welcome Home</title>
         <meta
           name="description"
-          content="Welcome to Christ Apostolic Church Hours of Mercy in Dolton, Illinois. Join our loving community for worship, fellowship, and spiritual growth."
+          content="Welcome to Christ Apostolic Hours of Mercy in Dolton, Illinois. Join our loving community for worship, fellowship, and spiritual growth."
         />
         <meta
           name="keywords"
@@ -239,7 +239,7 @@ const HomePage = () => {
                     lineHeight: 1.1,
                   }}
                 >
-                  Welcome to Hours of Mercy
+                  Welcome to Christ Apostolic
                 </Typography>
                 <Typography
                   variant="h4"
@@ -250,7 +250,7 @@ const HomePage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Christ Apostolic Church - Where Faith Meets Fellowship
+                  Hours of Mercy - Where Faith Meets Fellowship
                 </Typography>
                 <Typography
                   variant="h6"

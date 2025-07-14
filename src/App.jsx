@@ -15,7 +15,7 @@ import FirebaseStatus from "./components/FirebaseStatus";
 // Pages
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
-import SermonPage from "./pages/SermonPageModern";
+import SermonPage from "./pages/SermonPage";
 import EventsPage from "./pages/EventsPage";
 import MinistriesPage from "./pages/MinistriesPage";
 import GivingPage from "./pages/GivingPage";
