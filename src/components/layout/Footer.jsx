@@ -32,13 +32,21 @@ const Footer = () => {
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
+    console.log("Newsletter form submitted", { email, loading });
+
     if (email.trim()) {
-      await subscribe(email);
-      if (success) {
-        setEmail("");
-        // Reset status after 3 seconds
-        setTimeout(() => resetStatus(), 3000);
+      try {
+        await subscribe(email);
+        if (success) {
+          setEmail("");
+          // Reset status after 3 seconds
+          setTimeout(() => resetStatus(), 3000);
+        }
+      } catch (error) {
+        console.error("Newsletter subscription error:", error);
       }
+    } else {
+      console.log("Email is empty, not submitting");
     }
     setEmail("");
   };
@@ -199,16 +207,54 @@ const Footer = () => {
               <Button
                 type="submit"
                 variant="contained"
-                color="secondary"
                 fullWidth
-                disabled={!email || loading}
+                disabled={!email.trim() || loading}
+                onClick={handleNewsletterSubmit}
                 startIcon={
                   loading ? (
                     <CircularProgress size={16} color="inherit" />
                   ) : null
                 }
+                sx={{
+                  minHeight: 48,
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  textTransform: "none",
+                  borderRadius: 2,
+                  backgroundColor: "#06b6d4",
+                  color: "white",
+                  cursor: "pointer !important",
+                  pointerEvents: "auto !important",
+                  "&:hover": {
+                    backgroundColor: "#0891b2 !important",
+                    transform: "translateY(-2px) !important",
+                    boxShadow: "0 6px 20px rgba(6, 182, 212, 0.4) !important",
+                    cursor: "pointer !important",
+                  },
+                  "&:active": {
+                    transform: "translateY(0px) !important",
+                  },
+                  "&:disabled": {
+                    cursor: "not-allowed !important",
+                    opacity: "0.5 !important",
+                    pointerEvents: "none !important",
+                  },
+                  transition: "all 0.2s ease-in-out !important",
+                  zIndex: 1,
+                  position: "relative",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.cursor = "pointer";
+                  console.log("Button hover detected");
+                }}
+                onMouseLeave={(e) => {
+                  console.log("Button hover ended");
+                }}
+                onTouchStart={() => {
+                  console.log("Button touch detected");
+                }}
               >
-                Subscribe
+                {loading ? "Subscribing..." : "Subscribe"}
               </Button>
             </Box>
 

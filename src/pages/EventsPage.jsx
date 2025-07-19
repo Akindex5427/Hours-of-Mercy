@@ -196,7 +196,13 @@ const EventsPage = () => {
   }, [selectedDate, getActiveTemplates]);
 
   return (
-    <>
+    <MotionBox
+      key="events-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <Helmet>
         <title>Events - Christ Apostolic Church Hours of Mercy</title>
         <meta
@@ -208,7 +214,7 @@ const EventsPage = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          bgcolor: "primary.main",
+          backgroundColor: "#1e3a8a",
           color: "white",
           py: 8,
           position: "relative",
@@ -311,10 +317,10 @@ const EventsPage = () => {
           {filteredEvents.map((event, index) => (
             <Grid item xs={12} md={6} lg={4} key={event.id}>
               <MotionCard
-                initial={{ y: 50, opacity: 0 }}
+                initial={{ y: 30, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                viewport={{ once: true }}
+                transition={{ delay: index * 0.05, duration: 0.4 }}
+                viewport={{ once: true, margin: "-50px" }}
                 sx={{
                   height: "100%",
                   cursor: "pointer",
@@ -584,7 +590,7 @@ const EventsPage = () => {
           </>
         )}
       </Dialog>
-    </>
+    </MotionBox>
   );
 };
 

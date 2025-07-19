@@ -575,6 +575,151 @@ export const useMinistries = () => {
   return { ministries, loading, error, addMinistry };
 };
 
+// Hook for ministry departments with staff counts
+export const useMinistryDepartments = () => {
+  const [departments, setDepartments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Predefined ministry departments structure
+  const predefinedDepartments = [
+    {
+      name: "Leadership",
+      description: "Church governance and spiritual oversight",
+      responsibilities: [
+        "Strategic church direction",
+        "Spiritual guidance",
+        "Board leadership",
+        "Vision casting",
+      ],
+      color: "primary",
+    },
+    {
+      name: "Pastoral Care",
+      description: "Shepherding and caring for congregation members",
+      responsibilities: [
+        "Counseling services",
+        "Hospital visitation",
+        "Crisis support",
+        "Bereavement care",
+      ],
+      color: "secondary",
+    },
+    {
+      name: "Youth Ministry",
+      description: "Ministering to children, teens, and young adults",
+      responsibilities: [
+        "Youth programs",
+        "Sunday school",
+        "Youth camps",
+        "Mentorship programs",
+      ],
+      color: "success",
+    },
+    {
+      name: "Worship Ministry",
+      description: "Leading the congregation in worship and praise",
+      responsibilities: [
+        "Music ministry",
+        "Choir direction",
+        "Sound system",
+        "Worship planning",
+      ],
+      color: "info",
+    },
+    {
+      name: "Administration",
+      description: "Managing church operations and logistics",
+      responsibilities: [
+        "Financial management",
+        "Facility maintenance",
+        "Event coordination",
+        "Record keeping",
+      ],
+      color: "warning",
+    },
+  ];
+
+  useEffect(() => {
+    const fetchDepartmentsWithCounts = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch staff data to calculate member counts
+        const staffData = await staffService.getAllStaff();
+
+        // Try to fetch departments from database first
+        let departmentsData = [];
+        try {
+          departmentsData = await ministriesService.getAllMinistries();
+        } catch (err) {
+          console.log("No departments in database, using predefined structure");
+        }
+
+        // If no departments in database, use predefined structure
+        if (departmentsData.length === 0) {
+          departmentsData = predefinedDepartments;
+        }
+
+        // Calculate member counts for each department
+        const departmentsWithCounts = departmentsData.map((dept) => {
+          const memberCount = staffData.filter(
+            (staff) => staff.department === dept.name
+          ).length;
+
+          const members = staffData.filter(
+            (staff) => staff.department === dept.name
+          );
+
+          return {
+            ...dept,
+            memberCount,
+            members,
+          };
+        });
+
+        setDepartments(departmentsWithCounts);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+        // Fallback to predefined departments with zero counts
+        setDepartments(
+          predefinedDepartments.map((dept) => ({
+            ...dept,
+            memberCount: 0,
+            members: [],
+          }))
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDepartmentsWithCounts();
+  }, []);
+
+  // Function to seed departments to database
+  const seedDepartments = async () => {
+    try {
+      for (const dept of predefinedDepartments) {
+        await ministriesService.addMinistry(dept);
+      }
+      return true;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  return {
+    departments,
+    loading,
+    error,
+    seedDepartments,
+    predefinedDepartments,
+  };
+};
+
 // Hook for configuration data
 export const useConfig = (configType) => {
   const [config, setConfig] = useState(null);

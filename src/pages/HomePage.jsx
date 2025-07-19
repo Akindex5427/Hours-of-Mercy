@@ -155,7 +155,7 @@ const HomePage = () => {
           minHeight: "100vh", // Use full viewport height
           display: "flex",
           alignItems: "center",
-          background: "linear-gradient(135deg, #2c5530 0%, #1a3a1d 100%)",
+          background: "linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%)",
           color: "white",
           overflow: "hidden",
           pt: { xs: 10, md: 12 }, // Top padding to account for fixed header

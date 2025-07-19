@@ -81,7 +81,7 @@ const AboutPage = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          bgcolor: "primary.main",
+          backgroundColor: "#1e3a8a",
           color: "white",
           py: 8,
           position: "relative",
@@ -382,7 +382,13 @@ const AboutPage = () => {
       </Box>
 
       {/* Vision & Mission */}
-      <Box sx={{ py: 8, bgcolor: "primary.main", color: "white" }}>
+      <Box
+        sx={{
+          py: 8,
+          backgroundColor: "#1e3a8a",
+          color: "white",
+        }}
+      >
         <Container maxWidth="lg">
           <Grid container spacing={6}>
             <Grid item xs={12} md={6}>

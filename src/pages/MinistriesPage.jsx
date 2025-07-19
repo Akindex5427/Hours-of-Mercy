@@ -56,7 +56,13 @@ const MinistriesPage = () => {
   };
 
   return (
-    <>
+    <MotionBox
+      key="ministries-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <Helmet>
         <title>Ministries - Christ Apostolic Church Hours of Mercy</title>
         <meta
@@ -68,7 +74,7 @@ const MinistriesPage = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          bgcolor: "primary.main",
+          backgroundColor: "#1e3a8a",
           color: "white",
           py: 8,
           position: "relative",
@@ -127,10 +133,10 @@ const MinistriesPage = () => {
             {ministries.map((ministry, index) => (
               <Grid item xs={12} lg={6} key={ministry.id}>
                 <MotionCard
-                  initial={{ y: 50, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: index * 0.1, duration: 0.8 }}
-                  viewport={{ once: true }}
+                  initial={{ x: -30, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  transition={{ delay: index * 0.15, duration: 0.7 }}
+                  viewport={{ once: true, margin: "-100px" }}
                   sx={{
                     height: "100%",
                     "&:hover": {
@@ -428,7 +434,7 @@ const MinistriesPage = () => {
           </Paper>
         </Container>
       </Box>
-    </>
+    </MotionBox>
   );
 };
 

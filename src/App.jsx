@@ -1,11 +1,17 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Toolbar } from "@mui/material";
 import { HelmetProvider } from "react-helmet-async";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AnimatePresence } from "framer-motion";
 
 // Components
 import Header from "./components/layout/Header";
@@ -19,32 +25,42 @@ import SermonPage from "./pages/SermonPage";
 import EventsPage from "./pages/EventsPage";
 import MinistriesPage from "./pages/MinistriesPage";
 import GivingPage from "./pages/GivingPage";
-import ContactPage from "./pages/ContactPage";
+import ContactPage from "./pages/ContactPageSafe";
 import PrayerRequestPage from "./pages/PrayerRequestPage";
 import MemberPortal from "./pages/MemberPortal";
-import StaffDirectory from "./pages/StaffDirectory";
+import StaffDirectory from "./pages/StaffDirectorySafe";
 import AdminPage from "./pages/AdminPage";
 
 // Theme configuration
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#2c5530", // Deep forest green
-      light: "#5a7f5e",
-      dark: "#1a3a1d",
+      main: "#1e3a8a", // Deep navy blue
+      light: "#3b82f6", // Bright blue
+      dark: "#1e40af", // Darker navy
     },
     secondary: {
-      main: "#d4af37", // Golden yellow
-      light: "#ddc15e",
-      dark: "#a8822b",
+      main: "#06b6d4", // Cyan blue
+      light: "#67e8f9", // Light cyan
+      dark: "#0891b2", // Dark cyan
     },
     background: {
-      default: "#fafafa",
+      default: "#f8fafc", // Very light blue-gray
       paper: "#ffffff",
     },
     text: {
-      primary: "#2c2c2c",
-      secondary: "#5a5a5a",
+      primary: "#1e293b", // Dark blue-gray
+      secondary: "#475569", // Medium blue-gray
+    },
+    info: {
+      main: "#0ea5e9", // Sky blue
+      light: "#7dd3fc",
+      dark: "#0284c7",
+    },
+    success: {
+      main: "#10b981", // Emerald (keeping some accent color)
+      light: "#6ee7b7",
+      dark: "#059669",
     },
   },
   typography: {
@@ -81,18 +97,88 @@ const theme = createTheme({
           borderRadius: 8,
           padding: "10px 24px",
         },
+        contained: {
+          backgroundColor: "#1e3a8a",
+          color: "white",
+          "&:hover": {
+            backgroundColor: "#1e40af",
+            transform: "translateY(-1px)",
+            boxShadow: "0 4px 12px rgba(30, 58, 138, 0.3)",
+          },
+        },
+        outlined: {
+          borderColor: "#1e3a8a",
+          color: "#1e3a8a",
+          "&:hover": {
+            borderColor: "#1e40af",
+            backgroundColor: "rgba(30, 58, 138, 0.04)",
+          },
+        },
+        text: {
+          color: "#1e3a8a",
+          "&:hover": {
+            backgroundColor: "rgba(30, 58, 138, 0.04)",
+          },
+        },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-          borderRadius: 12,
+          boxShadow: "0 4px 16px rgba(30, 58, 138, 0.1)",
+          borderRadius: 16,
+          border: "1px solid rgba(59, 130, 246, 0.1)",
+          "&:hover": {
+            boxShadow: "0 8px 24px rgba(30, 58, 138, 0.15)",
+            transform: "translateY(-2px)",
+            transition: "all 0.3s ease-in-out",
+          },
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#1e3a8a",
+          backdropFilter: "blur(10px)",
+          borderBottom: "1px solid rgba(59, 130, 246, 0.2)",
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#06b6d4",
+          color: "white",
+          fontWeight: 600,
         },
       },
     },
   },
 });
+
+// Route wrapper component for animations
+const AnimatedRoutes = () => {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/sermons" element={<SermonPage />} />
+        <Route path="/events" element={<EventsPage />} />
+        <Route path="/ministries" element={<MinistriesPage />} />
+        <Route path="/giving" element={<GivingPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/prayer-request" element={<PrayerRequestPage />} />
+        <Route path="/member-portal" element={<MemberPortal />} />
+        <Route path="/staff" element={<StaffDirectory />} />
+        <Route path="/admin" element={<AdminPage />} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
 
 function App() {
   return (
@@ -106,22 +192,7 @@ function App() {
               <Header />
               <Toolbar /> {/* This creates space for the fixed header */}
               <main>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/sermons" element={<SermonPage />} />
-                  <Route path="/events" element={<EventsPage />} />
-                  <Route path="/ministries" element={<MinistriesPage />} />
-                  <Route path="/giving" element={<GivingPage />} />
-                  <Route path="/contact" element={<ContactPage />} />
-                  <Route
-                    path="/prayer-request"
-                    element={<PrayerRequestPage />}
-                  />
-                  <Route path="/member-portal" element={<MemberPortal />} />
-                  <Route path="/staff" element={<StaffDirectory />} />
-                  <Route path="/admin" element={<AdminPage />} />
-                </Routes>
+                <AnimatedRoutes />
               </main>
               <Footer />
             </div>

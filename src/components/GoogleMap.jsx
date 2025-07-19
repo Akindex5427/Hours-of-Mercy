@@ -13,6 +13,19 @@ const GoogleMap = ({
 
   useEffect(() => {
     const loadGoogleMaps = () => {
+      const apiKey =
+        process.env.VITE_GOOGLE_MAPS_API_KEY ||
+        process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
+      // If no API key is available, show fallback
+      if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
+        setError(
+          "Google Maps API key not configured. Please add VITE_GOOGLE_MAPS_API_KEY to your environment variables."
+        );
+        setIsLoading(false);
+        return;
+      }
+
       // Check if Google Maps is already loaded
       if (window.google && window.google.maps) {
         initializeMap();
@@ -36,9 +49,7 @@ const GoogleMap = ({
 
       // Create and load Google Maps script
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${
-        process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "YOUR_API_KEY_HERE"
-      }&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
       script.async = true;
       script.defer = true;
 
