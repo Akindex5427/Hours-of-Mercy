@@ -31,7 +31,7 @@ import {
   useSermons,
   useMinistries,
 } from "../hooks/useFirestore";
-import HOMImage from "../assets/HOM.png";
+import HOMImage from "../assets/HOM2.jpg";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
@@ -155,7 +155,7 @@ const HomePage = () => {
           minHeight: "100vh", // Use full viewport height
           display: "flex",
           alignItems: "center",
-          background: "linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%)",
+          backgroundColor: "#1e3a8a",
           color: "white",
           overflow: "hidden",
           pt: { xs: 10, md: 12 }, // Top padding to account for fixed header

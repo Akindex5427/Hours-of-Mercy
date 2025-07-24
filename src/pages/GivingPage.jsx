@@ -67,12 +67,36 @@ const GivingPage = () => {
   // Static data - always works
   const donationTypes = [
     { value: "tithe", label: "Tithe", description: "Your faithful 10%" },
-    { value: "offering", label: "General Offering", description: "Support church operations" },
-    { value: "missions", label: "Missions", description: "Support our missionary work" },
-    { value: "building", label: "Building Fund", description: "Church building and maintenance" },
-    { value: "youth", label: "Youth Ministry", description: "Support our youth programs" },
-    { value: "benevolence", label: "Benevolence", description: "Help those in need" },
-    { value: "special", label: "Special Project", description: "Current special initiatives" },
+    {
+      value: "offering",
+      label: "General Offering",
+      description: "Support church operations",
+    },
+    {
+      value: "missions",
+      label: "Missions",
+      description: "Support our missionary work",
+    },
+    {
+      value: "building",
+      label: "Building Fund",
+      description: "Church building and maintenance",
+    },
+    {
+      value: "youth",
+      label: "Youth Ministry",
+      description: "Support our youth programs",
+    },
+    {
+      value: "benevolence",
+      label: "Benevolence",
+      description: "Help those in need",
+    },
+    {
+      value: "special",
+      label: "Special Project",
+      description: "Current special initiatives",
+    },
     { value: "other", label: "Other", description: "Specify your purpose" },
   ];
 
@@ -87,7 +111,11 @@ const GivingPage = () => {
 
   const paymentMethods = [
     { value: "card", label: "Credit/Debit Card", icon: <CreditCardOutlined /> },
-    { value: "ach", label: "Bank Transfer (ACH)", icon: <AccountBalanceOutlined /> },
+    {
+      value: "ach",
+      label: "Bank Transfer (ACH)",
+      icon: <AccountBalanceOutlined />,
+    },
   ];
 
   const quickAmounts = [25, 50, 100, 250, 500, 1000];
@@ -95,17 +123,19 @@ const GivingPage = () => {
   const givingInfo = [
     {
       title: "Secure & Safe",
-      description: "Your donations are processed securely with industry-standard encryption",
+      description:
+        "Your donations are processed securely with industry-standard encryption",
       icon: <SecurityOutlined />,
     },
     {
       title: "Tax Deductible",
-      description: "All donations are tax-deductible. You'll receive receipts for your records",
+      description:
+        "All donations are tax-deductible. You'll receive receipts for your records",
       icon: <VerifiedUserOutlined />,
     },
     {
       title: "Multiple Ways to Give",
-      description: "Give online, by phone, or in person during services",
+      description: "Give online, by Zelle, or in person during services",
       icon: <PaymentOutlined />,
     },
   ];
@@ -143,10 +173,10 @@ const GivingPage = () => {
     try {
       // Simulate payment processing
       console.log("Donation form submitted:", data);
-      
+
       setShowSuccess(true);
       reset();
-      
+
       // Hide success message after 8 seconds
       setTimeout(() => setShowSuccess(false), 8000);
     } catch (error) {
@@ -195,8 +225,8 @@ const GivingPage = () => {
               sx={{ opacity: 0.9, maxWidth: "700px", mx: "auto" }}
             >
               "Give, and it will be given to you. A good measure, pressed down,
-              shaken together and running over, will be poured into your lap."
-              - Luke 6:38
+              shaken together and running over, will be poured into your lap." -
+              Luke 6:38
             </Typography>
           </MotionBox>
         </Container>
@@ -210,8 +240,9 @@ const GivingPage = () => {
             onClose={() => setShowSuccess(false)}
             icon={<CheckCircleOutlined />}
           >
-            Thank you for your generous donation! Your gift will make a difference in our ministry.
-            You should receive a confirmation email shortly.
+            Thank you for your generous donation! Your gift will make a
+            difference in our ministry. You should receive a confirmation email
+            shortly.
           </Alert>
         )}
 
@@ -236,20 +267,28 @@ const GivingPage = () => {
                   color="text.secondary"
                   sx={{ mb: 4 }}
                 >
-                  Your generous giving helps us continue our mission of spreading
-                  God's love and serving our community.
+                  Your generous giving helps us continue our mission of
+                  spreading God's love and serving our community.
                 </Typography>
 
                 <Box component="form" onSubmit={handleSubmit(onSubmit)}>
                   {/* Amount Section */}
                   <Paper sx={{ p: 3, mb: 4, bgcolor: "grey.50" }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                    <Typography
+                      variant="h6"
+                      gutterBottom
+                      sx={{ fontWeight: 600 }}
+                    >
                       Donation Amount
                     </Typography>
-                    
+
                     {/* Quick Amount Buttons */}
                     <Box sx={{ mb: 3 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 2 }}
+                      >
                         Select a quick amount:
                       </Typography>
                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
@@ -258,7 +297,9 @@ const GivingPage = () => {
                             key={amount}
                             label={`$${amount}`}
                             onClick={() => handleQuickAmount(amount)}
-                            color={watchedAmount == amount ? "primary" : "default"}
+                            color={
+                              watchedAmount == amount ? "primary" : "default"
+                            }
                             clickable
                           />
                         ))}
@@ -275,7 +316,9 @@ const GivingPage = () => {
                           type="number"
                           fullWidth
                           InputProps={{
-                            startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>,
+                            startAdornment: (
+                              <Typography sx={{ mr: 1 }}>$</Typography>
+                            ),
                           }}
                           error={!!errors.amount}
                           helperText={errors.amount?.message}
@@ -297,8 +340,13 @@ const GivingPage = () => {
                               {donationTypes.map((type) => (
                                 <MenuItem key={type.value} value={type.value}>
                                   <Box>
-                                    <Typography variant="body1">{type.label}</Typography>
-                                    <Typography variant="caption" color="text.secondary">
+                                    <Typography variant="body1">
+                                      {type.label}
+                                    </Typography>
+                                    <Typography
+                                      variant="caption"
+                                      color="text.secondary"
+                                    >
                                       {type.description}
                                     </Typography>
                                   </Box>
@@ -349,7 +397,10 @@ const GivingPage = () => {
 
                     {/* Personal Information */}
                     <Grid item xs={12}>
-                      <Typography variant="h6" sx={{ fontWeight: 600, mt: 2, mb: 2 }}>
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: 600, mt: 2, mb: 2 }}
+                      >
                         Contact Information
                       </Typography>
                     </Grid>
@@ -419,7 +470,10 @@ const GivingPage = () => {
 
                     {/* Address Information */}
                     <Grid item xs={12}>
-                      <Typography variant="h6" sx={{ fontWeight: 600, mt: 2, mb: 2 }}>
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: 600, mt: 2, mb: 2 }}
+                      >
                         Billing Address (Optional)
                       </Typography>
                     </Grid>
@@ -443,11 +497,7 @@ const GivingPage = () => {
                         name="city"
                         control={control}
                         render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="City"
-                            fullWidth
-                          />
+                          <TextField {...field} label="City" fullWidth />
                         )}
                       />
                     </Grid>
@@ -457,11 +507,7 @@ const GivingPage = () => {
                         name="state"
                         control={control}
                         render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="State"
-                            fullWidth
-                          />
+                          <TextField {...field} label="State" fullWidth />
                         )}
                       />
                     </Grid>
@@ -471,18 +517,17 @@ const GivingPage = () => {
                         name="zipCode"
                         control={control}
                         render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="Zip Code"
-                            fullWidth
-                          />
+                          <TextField {...field} label="Zip Code" fullWidth />
                         )}
                       />
                     </Grid>
 
                     {/* Payment Method */}
                     <Grid item xs={12}>
-                      <Typography variant="h6" sx={{ fontWeight: 600, mt: 2, mb: 2 }}>
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: 600, mt: 2, mb: 2 }}
+                      >
                         Payment Method
                       </Typography>
                       <Controller
@@ -493,10 +538,20 @@ const GivingPage = () => {
                             <InputLabel>Payment Method</InputLabel>
                             <Select {...field} label="Payment Method">
                               {paymentMethods.map((method) => (
-                                <MenuItem key={method.value} value={method.value}>
-                                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                                <MenuItem
+                                  key={method.value}
+                                  value={method.value}
+                                >
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
                                     {method.icon}
-                                    <Typography sx={{ ml: 1 }}>{method.label}</Typography>
+                                    <Typography sx={{ ml: 1 }}>
+                                      {method.label}
+                                    </Typography>
                                   </Box>
                                 </MenuItem>
                               ))}
@@ -521,17 +576,39 @@ const GivingPage = () => {
                   {/* Summary */}
                   {watchedAmount && watchedDonationType && (
                     <Paper sx={{ p: 3, mb: 3, bgcolor: "primary.50" }}>
-                      <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                      <Typography
+                        variant="h6"
+                        gutterBottom
+                        sx={{ fontWeight: 600 }}
+                      >
                         Donation Summary
                       </Typography>
-                      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          mb: 1,
+                        }}
+                      >
                         <Typography>Amount:</Typography>
-                        <Typography sx={{ fontWeight: 600 }}>${watchedAmount}</Typography>
+                        <Typography sx={{ fontWeight: 600 }}>
+                          ${watchedAmount}
+                        </Typography>
                       </Box>
-                      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          mb: 1,
+                        }}
+                      >
                         <Typography>Type:</Typography>
                         <Typography>
-                          {donationTypes.find(t => t.value === watchedDonationType)?.label}
+                          {
+                            donationTypes.find(
+                              (t) => t.value === watchedDonationType
+                            )?.label
+                          }
                         </Typography>
                       </Box>
                     </Paper>
@@ -547,7 +624,9 @@ const GivingPage = () => {
                     sx={{ mt: 2, px: 4, py: 1.5, fontSize: "1.1rem" }}
                     fullWidth
                   >
-                    {isSubmitting ? "Processing..." : `Give ${watchedAmount ? `$${watchedAmount}` : ""}`}
+                    {isSubmitting
+                      ? "Processing..."
+                      : `Give ${watchedAmount ? `$${watchedAmount}` : ""}`}
                   </Button>
                 </Box>
               </CardContent>
@@ -569,13 +648,15 @@ const GivingPage = () => {
                   Why We Give
                 </Typography>
                 <Typography variant="body2" color="text.secondary" paragraph>
-                  Giving is an act of worship and obedience to God. Your generous 
-                  contributions help us:
+                  Giving is an act of worship and obedience to God. Your
+                  generous contributions help us:
                 </Typography>
                 <List dense>
                   <ListItem sx={{ px: 0, py: 0.5 }}>
                     <ListItemIcon sx={{ minWidth: 30 }}>
-                      <ChurchOutlined sx={{ fontSize: 20, color: "primary.main" }} />
+                      <ChurchOutlined
+                        sx={{ fontSize: 20, color: "primary.main" }}
+                      />
                     </ListItemIcon>
                     <ListItemText
                       primary="Support weekly services and programs"
@@ -584,7 +665,9 @@ const GivingPage = () => {
                   </ListItem>
                   <ListItem sx={{ px: 0, py: 0.5 }}>
                     <ListItemIcon sx={{ minWidth: 30 }}>
-                      <VolunteerActivismOutlined sx={{ fontSize: 20, color: "primary.main" }} />
+                      <VolunteerActivismOutlined
+                        sx={{ fontSize: 20, color: "primary.main" }}
+                      />
                     </ListItemIcon>
                     <ListItemText
                       primary="Reach out to our community"
@@ -593,7 +676,9 @@ const GivingPage = () => {
                   </ListItem>
                   <ListItem sx={{ px: 0, py: 0.5 }}>
                     <ListItemIcon sx={{ minWidth: 30 }}>
-                      <FavoriteOutlined sx={{ fontSize: 20, color: "primary.main" }} />
+                      <FavoriteOutlined
+                        sx={{ fontSize: 20, color: "primary.main" }}
+                      />
                     </ListItemIcon>
                     <ListItemText
                       primary="Support missions and ministry"
@@ -615,9 +700,7 @@ const GivingPage = () => {
               >
                 <CardContent>
                   <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Box sx={{ mr: 2, color: "primary.main" }}>
-                      {info.icon}
-                    </Box>
+                    <Box sx={{ mr: 2, color: "primary.main" }}>{info.icon}</Box>
                     <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       {info.title}
                     </Typography>
@@ -647,7 +730,10 @@ const GivingPage = () => {
                     <ListItemText
                       primary="In-Person"
                       secondary="During any of our service times"
-                      primaryTypographyProps={{ variant: "body2", fontWeight: 600 }}
+                      primaryTypographyProps={{
+                        variant: "body2",
+                        fontWeight: 600,
+                      }}
                       secondaryTypographyProps={{ variant: "caption" }}
                     />
                   </ListItem>
@@ -655,15 +741,21 @@ const GivingPage = () => {
                     <ListItemText
                       primary="By Mail"
                       secondary="1480 Lincoln Ave, Dolton, IL 60419"
-                      primaryTypographyProps={{ variant: "body2", fontWeight: 600 }}
+                      primaryTypographyProps={{
+                        variant: "body2",
+                        fontWeight: 600,
+                      }}
                       secondaryTypographyProps={{ variant: "caption" }}
                     />
                   </ListItem>
                   <ListItem sx={{ px: 0 }}>
                     <ListItemText
-                      primary="By Phone"
-                      secondary="Call (708) 555-0123 for assistance"
-                      primaryTypographyProps={{ variant: "body2", fontWeight: 600 }}
+                      primary="By Zelle"
+                      secondary="Zelle to (773) 977-9630"
+                      primaryTypographyProps={{
+                        variant: "body2",
+                        fontWeight: 600,
+                      }}
                       secondaryTypographyProps={{ variant: "caption" }}
                     />
                   </ListItem>
